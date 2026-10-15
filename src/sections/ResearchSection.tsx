@@ -30,7 +30,8 @@ export default function ResearchSection() {
     }
   }, [isVisible, reduced]);
 
-  // Compute live TinyML Model Metrics based on quantization level & sampling rate
+  // TODO_USER: Replace illustrative simulator constants with real measurements once benchmarked on hardware
+  // (requires documented test dataset, split, device, and measurement method)
   const getModelMetrics = () => {
     let sizeKb = 148;
     let latencyMs = 28;
@@ -191,23 +192,28 @@ export default function ResearchSection() {
                 />
               </div>
 
-              {/* Live Metric Cards */}
-              <div className="grid grid-cols-2 gap-3 font-mono text-xs">
-                <div className="p-3 rounded-xl bg-bg-primary border border-border-subtle">
-                  <span className="text-text-muted text-[10px] uppercase block mb-1">FLASH SIZE</span>
-                  <span className="text-lg font-bold text-accent-green">{metrics.sizeKb} KB</span>
-                </div>
-                <div className="p-3 rounded-xl bg-bg-primary border border-border-subtle">
-                  <span className="text-text-muted text-[10px] uppercase block mb-1">RAM FOOTPRINT</span>
-                  <span className="text-lg font-bold text-primary">{metrics.ramKb} KB</span>
-                </div>
-                <div className="p-3 rounded-xl bg-bg-primary border border-border-subtle">
-                  <span className="text-text-muted text-[10px] uppercase block mb-1">LATENCY / INFER</span>
-                  <span className="text-lg font-bold text-accent-amber">{metrics.latencyMs} ms</span>
-                </div>
-                <div className="p-3 rounded-xl bg-bg-primary border border-border-subtle">
-                  <span className="text-text-muted text-[10px] uppercase block mb-1">ACCURACY</span>
-                  <span className="text-lg font-bold text-secondary">{metrics.accuracy}%</span>
+              {/* TinyML Metrics Simulator Panel */}
+              <div className="space-y-1.5">
+                <span className="font-mono text-[9px] uppercase tracking-wider text-accent-amber block font-semibold">
+                  ILLUSTRATIVE SIMULATOR: example values, not measured results
+                </span>
+                <div className="grid grid-cols-2 gap-3 font-mono text-xs">
+                  <div className="p-3 rounded-xl bg-bg-primary border border-border-subtle">
+                    <span className="text-text-muted text-[10px] uppercase block mb-1">FLASH SIZE</span>
+                    <span className="text-lg font-bold text-accent-green">{metrics.sizeKb} KB</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-bg-primary border border-border-subtle">
+                    <span className="text-text-muted text-[10px] uppercase block mb-1">RAM FOOTPRINT</span>
+                    <span className="text-lg font-bold text-primary">{metrics.ramKb} KB</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-bg-primary border border-border-subtle">
+                    <span className="text-text-muted text-[10px] uppercase block mb-1">LATENCY / INFER</span>
+                    <span className="text-lg font-bold text-accent-amber">{metrics.latencyMs} ms</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-bg-primary border border-border-subtle">
+                    <span className="text-text-muted text-[10px] uppercase block mb-1">ACCURACY</span>
+                    <span className="text-lg font-bold text-secondary">{metrics.accuracy}%</span>
+                  </div>
                 </div>
               </div>
             </div>

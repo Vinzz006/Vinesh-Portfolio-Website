@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronRight,
@@ -20,9 +20,10 @@ import { animatePipeline, animateNodePulse } from '../animations/anime-utils';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import StatusIndicator from '../components/StatusIndicator';
 import LiveSignalWaveform from '../components/LiveSignalWaveform';
-import ArchitectureFlowConnector from '../components/ArchitectureFlowCanvas';
 import SectionLightSweep from '../components/SectionLightSweep';
 import { projects, type ArchitectureNode } from '../data/projects';
+
+const ArchitectureFlowConnector = lazy(() => import('../components/ArchitectureFlowCanvas'));
 
 const pipelineNodes = [
   {
@@ -563,13 +564,15 @@ export default function EngineeringLabSection() {
 
                           {/* Animated SVG Stream Connector */}
                           {idx < (selectedProject.architectureDetails?.length ?? 0) - 1 && (
-                            <ArchitectureFlowConnector
-                              label={node.tech.split('/')[0] || 'bus'}
-                              color={colors.hex}
-                              isActive={isSelected || isSimActive}
-                              isStreaming={isStreaming}
-                              packetInTransit={isSimActive}
-                            />
+                            <Suspense fallback={<div className="h-9 my-1.5 ml-6 sm:ml-7" />}>
+                              <ArchitectureFlowConnector
+                                label={node.tech.split('/')[0] || 'bus'}
+                                color={colors.hex}
+                                isActive={isSelected || isSimActive}
+                                isStreaming={isStreaming}
+                                packetInTransit={isSimActive}
+                              />
+                            </Suspense>
                           )}
                         </div>
                       );

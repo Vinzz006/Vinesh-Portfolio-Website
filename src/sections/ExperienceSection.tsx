@@ -35,7 +35,7 @@ export default function ExperienceSection() {
       aria-labelledby="experience-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        <SectionLightSweep actLabel="ACT 06" actTitle="MILESTONES & TIMELINE" isVisible={isVisible} />
+        <SectionLightSweep actLabel="ACT 06" actTitle="EXPERIENCE" isVisible={isVisible} />
       </div>
 
       <div className="absolute inset-0 grid-bg opacity-15 pointer-events-none" aria-hidden="true" />
@@ -47,12 +47,9 @@ export default function ExperienceSection() {
       >
         {/* Header */}
         <div className="mb-12">
-          <span className="section-label">EXPERIENCE & JOURNEY</span>
+          <span className="section-label">EXPERIENCE</span>
           <h2 id="experience-heading" className="text-4xl sm:text-5xl font-black text-text-bright mt-2 tracking-tight">
-            Journey &{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-cyan-400 to-secondary">
-              Milestones
-            </span>
+            Experience
           </h2>
           <p className="section-subtitle mt-3">
             Academic degree, telecom engineering internship and milestone development systems.
@@ -114,7 +111,7 @@ export default function ExperienceSection() {
                           <p className="text-text-secondary text-sm font-medium mt-0.5">{item.organization}</p>
                         </div>
                         <span className="font-mono text-xs text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/30 whitespace-nowrap font-bold">
-                          {item.period}
+                          {item.id === 'bsnl' ? (/\d{4}/.test(item.period) ? item.period : 'Internship') : item.period}
                         </span>
                       </div>
                       <p className="text-text-secondary text-sm leading-relaxed mb-4">

@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ChevronDown, Sparkles } from 'lucide-react';
-import Vinzz3DScene from '../three/Vinzz3DScene';
-import vineshCinematic from '../../assets/vinesh_cinematic_intro.jpg';
+import vineshCinematic from '../../assets/vinesh_cinematic_intro.webp';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+
+const Vinzz3DScene = lazy(() => import('../three/Vinzz3DScene'));
 
 interface Cinematic3DIntroProps {
   onComplete: () => void;
@@ -121,7 +122,9 @@ export default function Cinematic3DIntro({ onComplete }: Cinematic3DIntroProps) 
         </div>
 
         {/* 1. 3D WebGL Canvas Layer (Three.js & R3F with Cinematic Portrait Mesh) */}
-        <Vinzz3DScene mouseX={mousePos.x} mouseY={mousePos.y} isEntering={isEntering} />
+        <Suspense fallback={<div className="absolute inset-0 bg-[#050A0F]" />}>
+          <Vinzz3DScene mouseX={mousePos.x} mouseY={mousePos.y} isEntering={isEntering} />
+        </Suspense>
 
         {/* 2. Top Header Bar (Skip Intro & Status Badge) */}
         <div className="absolute top-6 left-6 right-6 z-20 flex items-center justify-between pointer-events-auto">

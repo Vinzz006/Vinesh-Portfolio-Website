@@ -198,9 +198,8 @@ async function generateResumePDF() {
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
   }
-  fs.writeFileSync(path.join(publicDir, 'Vinesh_Shanmugam_Resume.pdf'), pdfBytes);
   fs.writeFileSync(path.join(publicDir, 'resume.pdf'), pdfBytes);
-  console.log('Successfully generated Vinesh_Shanmugam_Resume.pdf and resume.pdf');
+  console.log('Successfully generated resume.pdf');
 }
 
 generateResumePDF().catch(console.error);

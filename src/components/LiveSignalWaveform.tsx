@@ -233,8 +233,8 @@ export const LiveSignalWaveform: React.FC<LiveSignalWaveformProps> = ({
           setSecondaryMetric('WSS Connected');
           break;
         case 'frontend':
-          setMetricValue((59.8 + Math.random() * 0.4).toFixed(1) + ' FPS');
-          setSecondaryMetric('16.6 ms frame');
+          setMetricValue('Render Tick');
+          setSecondaryMetric('UI Virtual DOM');
           break;
         default:
           setMetricValue('Active');
@@ -256,7 +256,7 @@ export const LiveSignalWaveform: React.FC<LiveSignalWaveformProps> = ({
             }`}
           />
           <span className="font-mono text-[11px] font-semibold text-text-bright truncate">
-            {nodeName} OSCILLOSCOPE
+            {nodeName} — SIMULATED SIGNAL (illustrative)
           </span>
         </div>
 
@@ -305,7 +305,7 @@ export const LiveSignalWaveform: React.FC<LiveSignalWaveformProps> = ({
       <div className="flex items-center justify-between text-[10px] font-mono text-text-muted px-0.5">
         <span className="flex items-center gap-1">
           <Zap size={10} className="text-primary" />
-          <span>REALTIME TELEMETRY</span>
+          <span>SIMULATED SIGNAL (illustrative)</span>
         </span>
         <span className="text-primary font-medium">{secondaryMetric}</span>
       </div>

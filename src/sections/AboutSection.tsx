@@ -1,15 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Cpu, Brain, Globe, Cloud, Zap, Activity, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { animateSectionEntrance } from '../animations/anime-utils';
-import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useReducedMotion, useLowPower } from '../hooks/useReducedMotion';
 import SectionLightSweep from '../components/SectionLightSweep';
 import { NumberTicker } from '../components/ui/NumberTicker';
 import { BentoGrid, BentoGridItem } from '../components/ui/BentoGrid';
 import { BorderBeam } from '../components/ui/BorderBeam';
-import About3DDecorations from '../components/3d/About3DDecorations';
 import ScrollTextReveal from '../components/motion/ScrollTextReveal';
+import { projects } from '../data/projects';
+import { timelineItems } from '../data/experience';
+import { measuredResults } from '../data/metrics';
+
+const About3DDecorations = lazy(() => import('../components/3d/About3DDecorations'));
 
 const stackLayers = [
   { label: 'Hardware', color: '#10B981' },
@@ -23,6 +27,23 @@ const stackLayers = [
 export default function AboutSection() {
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.1 });
   const reduced = useReducedMotion();
+  const lowPower = useLowPower();
+
+  // Compute metrics strictly from repository data
+  const projectsDocumented = projects.length;
+  const publicCodeCount = projects.filter((p) => p.githubUrl !== null).length;
+  const distinctTechCount = new Set(projects.flatMap((p) => p.technologies)).size;
+
+  // Derive completed years of study from experience.ts education period and today's date
+  const eduItem = timelineItems.find((item) => item.type === 'education');
+  const startYear = eduItem ? parseInt(eduItem.period.split('–')[0].trim(), 10) : 2024;
+  const academicStartDate = new Date(startYear, 7, 1); // August 2024 start
+  const now = new Date();
+  const diffYears = (now.getTime() - academicStartDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
+  const yearsCompleted = Math.max(0, Math.floor(diffYears));
+
+  // Only render measured results if an explicit test/measurement method is provided
+  const verifiedMeasuredResults = measuredResults.filter((m) => Boolean(m.method && m.method.trim()));
 
   useEffect(() => {
     if (isVisible) {
@@ -37,8 +58,12 @@ export default function AboutSection() {
       className="py-24 relative overflow-hidden bg-[#050505]"
       aria-labelledby="about-heading"
     >
-      {/* 3D Ambient Background Geometries */}
-      <About3DDecorations />
+      {/* 3D Ambient Background Geometries - Skipped in lowPower */}
+      {!lowPower && (
+        <Suspense fallback={null}>
+          <About3DDecorations />
+        </Suspense>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 relative z-10">
         <SectionLightSweep actLabel="ACT 02" actTitle="ENGINEERING ARCHITECTURE" isVisible={isVisible} />
@@ -61,49 +86,62 @@ export default function AboutSection() {
             </span>
           </h2>
           <ScrollTextReveal
-            text="I build systems where physical hardware becomes intelligent through software and machine learning. My work spans the full stack from reading a physical sensor on microcontrollers to serving model predictions and rendering 60 FPS real-time dashboards."
+            text="I build systems where physical hardware becomes intelligent through software and machine learning. My work spans the full stack from reading a physical sensor on microcontrollers to serving model predictions and rendering real-time dashboards."
             className="text-xl sm:text-2xl text-text-secondary leading-relaxed font-normal"
             highlightWords={['hardware', 'software', 'machine', 'learning', 'sensor', 'microcontrollers', 'predictions', 'dashboards']}
           />
         </div>
 
-        {/* Magic UI Animated Number Ticker Metrics Banner */}
+        {/* Computed Metrics Banner derived strictly from repository data */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
           <div className="glass-card p-5 border-primary/20 relative overflow-hidden group">
             <BorderBeam size={100} duration={6} colorFrom="#00D4FF" colorTo="#10B981" />
-            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-1">PROTOTYPED SYSTEMS</p>
+            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-1">PROJECTS DOCUMENTED</p>
             <div className="text-3xl md:text-4xl font-black text-text-bright flex items-baseline gap-1">
-              <NumberTicker value={10} suffix="+" />
+              <NumberTicker value={projectsDocumented} />
             </div>
-            <p className="text-xs text-text-muted mt-1">IoT, AI & Full-Stack Projects</p>
+            <p className="text-xs text-text-muted mt-1">Full Systems in Archive</p>
           </div>
 
           <div className="glass-card p-5 border-secondary/20 relative overflow-hidden group">
             <BorderBeam size={100} duration={8} colorFrom="#7C3AED" colorTo="#EC4899" />
-            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-1">REAL-TIME STREAMING</p>
+            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-1">PUBLIC CODE REPOSITORIES</p>
             <div className="text-3xl md:text-4xl font-black text-primary flex items-baseline gap-1">
-              <NumberTicker value={60} suffix=" FPS" />
+              <NumberTicker value={publicCodeCount} />
             </div>
-            <p className="text-xs text-text-muted mt-1">Telemetry Dashboard Sync</p>
+            <p className="text-xs text-text-muted mt-1">Open Source Repositories</p>
           </div>
 
           <div className="glass-card p-5 border-accent-green/20 relative overflow-hidden group">
             <BorderBeam size={100} duration={7} colorFrom="#10B981" colorTo="#00D4FF" />
-            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-1">ML ACCURACY</p>
+            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-1">DISTINCT TECHNOLOGIES</p>
             <div className="text-3xl md:text-4xl font-black text-accent-green flex items-baseline gap-1">
-              <NumberTicker value={99} suffix="%" />
+              <NumberTicker value={distinctTechCount} />
             </div>
-            <p className="text-xs text-text-muted mt-1">TinyML Activity Classification</p>
+            <p className="text-xs text-text-muted mt-1">Across Hardware, AI & Web</p>
           </div>
 
           <div className="glass-card p-5 border-accent-amber/20 relative overflow-hidden group">
             <BorderBeam size={100} duration={9} colorFrom="#F59E0B" colorTo="#7C3AED" />
-            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-1">EDGE INFERENCE</p>
+            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-1">YEARS OF STUDY COMPLETED</p>
             <div className="text-3xl md:text-4xl font-black text-accent-amber flex items-baseline gap-1">
-              <NumberTicker value={12} suffix=" ms" />
+              <NumberTicker value={yearsCompleted} suffix={yearsCompleted === 1 ? ' Year' : ' Years'} />
             </div>
-            <p className="text-xs text-text-muted mt-1">On-Device Model Latency</p>
+            <p className="text-xs text-text-muted mt-1">B.E. ECE (2024 – 2028)</p>
           </div>
+
+          {/* Measured results tiles rendered only when a defensible measurement method is supplied */}
+          {verifiedMeasuredResults.map((result, idx) => (
+            <div key={idx} className="glass-card p-5 border-accent-green/30 relative overflow-hidden group col-span-2 md:col-span-1">
+              <BorderBeam size={100} duration={7} colorFrom="#10B981" colorTo="#00D4FF" />
+              <p className="font-mono text-[10px] text-accent-green uppercase tracking-widest mb-1">MEASURED RESULT</p>
+              <div className="text-2xl md:text-3xl font-black text-text-bright flex items-baseline gap-1">
+                {result.value} <span className="text-sm font-normal text-text-muted">{result.unit}</span>
+              </div>
+              <p className="text-xs font-semibold text-text-primary mt-1">{result.label}</p>
+              <p className="text-[10px] text-text-muted mt-0.5 truncate" title={result.method}>Method: {result.method}</p>
+            </div>
+          ))}
         </div>
 
         {/* Stack layers visual */}

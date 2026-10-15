@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Mail, ExternalLink, Terminal as TerminalIcon, Send, CheckCircle2, CornerDownLeft, Sparkles, ArrowRight } from 'lucide-react';
+import { Mail, ExternalLink, Terminal as TerminalIcon, Send, CheckCircle2, CornerDownLeft, Sparkles, ArrowRight, FileText } from 'lucide-react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { animateSectionEntrance } from '../animations/anime-utils';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -142,7 +142,7 @@ export default function ContactSection() {
       output = (
         <div className="space-y-1 text-xs">
           <p className="text-accent-green">Official Resume PDF available for download:</p>
-          <a href="/Vinesh_Shanmugam_Resume.pdf" download="Vinesh_Shanmugam_Resume.pdf" className="text-primary underline flex items-center gap-1 mt-1 font-bold">
+          <a href="/resume.pdf" download="Vinesh_Shanmugam_Resume.pdf" className="text-primary underline flex items-center gap-1 mt-1 font-bold">
             <ExternalLink size={12} /> Download Vinesh_Shanmugam_Resume.pdf
           </a>
         </div>
@@ -175,7 +175,7 @@ export default function ContactSection() {
       aria-labelledby="contact-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        <SectionLightSweep actLabel="ACT 08" actTitle="COMMUNICATION & TELEMETRY" isVisible={isVisible} />
+        <SectionLightSweep actLabel="ACT 08" actTitle="CONTACT" isVisible={isVisible} />
       </div>
 
       <div className="absolute inset-0 grid-bg opacity-15 pointer-events-none" aria-hidden="true" />
@@ -194,180 +194,173 @@ export default function ContactSection() {
         className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10"
         style={{ opacity: 0 }}
       >
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0C0C0C] border border-border-subtle mb-6">
-          <Sparkles size={14} className="text-primary animate-pulse" />
-          <span className="font-mono text-xs text-primary tracking-[0.2em] uppercase font-bold">
-            LET'S CONNECT
-          </span>
+        <div className="mb-4">
+          <span className="section-label">CONTACT</span>
         </div>
 
-        <h2 id="contact-heading" className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mt-2 mb-6 text-text-bright tracking-tight leading-none uppercase">
-          LET'S BUILD SOMETHING{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-cyan-400 to-secondary">
-            TOGETHER.
-          </span>
+        <h2 id="contact-heading" className="text-4xl sm:text-5xl md:text-6xl font-black mt-2 mb-6 text-text-bright tracking-tight leading-tight">
+          Contact
         </h2>
 
         <p className="text-text-secondary text-base sm:text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
-          Have a project or opportunity involving AI, embedded systems, IoT microcontrollers or full-stack web architecture? Let's connect and engineer something real.
+          Have a project or opportunity involving AI, embedded systems, IoT microcontrollers or full-stack web architecture? Reach out directly or dispatch via the console below.
         </p>
 
-        {/* View Toggle Mode Selector */}
-        <div className="flex items-center justify-center gap-2 mb-10">
-          <button
-            onClick={() => setActiveTab('cards')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-              activeTab === 'cards'
-                ? 'bg-primary text-[#050505] font-bold shadow-glow-cyan'
-                : 'bg-[#0C0C0C] border border-border-subtle text-text-secondary hover:text-text-primary'
-            }`}
-          >
-            Direct Contact Cards
-          </button>
-          <button
-            onClick={() => setActiveTab('terminal')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 font-mono ${
-              activeTab === 'terminal'
-                ? 'bg-secondary text-white font-bold shadow-glow-violet'
-                : 'bg-[#0C0C0C] border border-border-subtle text-text-secondary hover:text-text-primary'
-            }`}
-          >
-            <TerminalIcon size={14} />
-            Dispatch Console
-          </button>
-        </div>
-
-        {/* Mode 1: Contact Cards with Magnetic CTA */}
-        {activeTab === 'cards' && (
-          <div>
-            <div className="grid sm:grid-cols-3 gap-4 mb-12" role="list">
-              {contactLinks.map(({ label, sub, href, Icon, color }) => (
-                <TiltCard key={label} maxTilt={3} className="rounded-2xl">
-                  <a
-                    href={href}
-                    target={href.startsWith('mailto') ? undefined : '_blank'}
-                    rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
-                    className="glass-card p-6 flex flex-col items-center gap-3 group border-white/10 hover:border-primary/40 hover:shadow-[0_0_35px_rgba(0,212,255,0.15)] transition-all duration-300 block text-center"
-                    role="listitem"
-                    aria-label={label}
-                  >
-                    <div
-                      className="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-md"
-                      style={{ backgroundColor: color + '15', border: `1px solid ${color}35` }}
-                    >
-                      <span style={{ color, display: 'flex' }}>
-                        <Icon size={22} />
-                      </span>
-                    </div>
-                    <div>
-                      <p className="font-bold text-text-bright text-sm group-hover:text-primary transition-colors">
-                        {label}
-                      </p>
-                      <p className="font-mono text-[10px] text-text-muted mt-1 truncate max-w-[190px]">
-                        {sub}
-                      </p>
-                    </div>
-                    <ExternalLink size={12} className="text-text-muted group-hover:text-primary transition-colors" aria-hidden="true" />
-                  </a>
-                </TiltCard>
-              ))}
-            </div>
-
-            {/* Grand Magnetic CTA Button */}
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <MagneticButton strength={0.3}>
-                <a
-                  href="mailto:shanmugamvinesh75@gmail.com"
-                  className="btn-primary text-sm sm:text-base px-8 py-4 inline-flex items-center gap-2.5 shadow-[0_0_30px_rgba(0,212,255,0.3)] hover:shadow-[0_0_50px_rgba(0,212,255,0.5)] font-bold rounded-2xl"
-                  aria-label="Send direct email to Vinesh"
+        {/* 1. Plain Contact Block Above Terminal */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" role="list">
+          {contactLinks.map(({ label, sub, href, Icon, color }) => (
+            <TiltCard key={label} maxTilt={3} className="rounded-2xl">
+              <a
+                href={href}
+                target={href.startsWith('mailto') ? undefined : '_blank'}
+                rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+                className="glass-card p-5 flex flex-col items-center gap-2.5 group border-white/10 hover:border-primary/40 hover:shadow-[0_0_30px_rgba(0,212,255,0.15)] transition-all duration-300 block text-center h-full justify-between"
+                role="listitem"
+                aria-label={label}
+              >
+                <div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-md"
+                  style={{ backgroundColor: color + '15', border: `1px solid ${color}35` }}
                 >
-                  <Mail size={18} />
-                  START A CONVERSATION
-                  <ArrowRight size={16} />
-                </a>
-              </MagneticButton>
+                  <span style={{ color, display: 'flex' }}>
+                    <Icon size={20} />
+                  </span>
+                </div>
+                <div>
+                  <p className="font-bold text-text-bright text-sm group-hover:text-primary transition-colors">
+                    {label}
+                  </p>
+                  <p className="font-mono text-[10px] text-text-muted mt-0.5 truncate max-w-[170px]">
+                    {sub}
+                  </p>
+                </div>
+                <ExternalLink size={12} className="text-text-muted group-hover:text-primary transition-colors mt-auto" aria-hidden="true" />
+              </a>
+            </TiltCard>
+          ))}
 
-              <MagneticButton strength={0.2}>
-                <a
-                  href="/Vinesh_Shanmugam_Resume.pdf"
-                  download="Vinesh_Shanmugam_Resume.pdf"
-                  className="btn-outline text-sm sm:text-base px-7 py-4 inline-flex items-center gap-2 font-semibold rounded-2xl border-white/15 hover:border-white/40"
-                  aria-label="Download Official Resume PDF"
-                >
-                  <ExternalLink size={16} />
-                  Resume PDF
-                </a>
-              </MagneticButton>
-            </div>
-          </div>
-        )}
-
-        {/* Mode 2: Interactive Cyber Console */}
-        {activeTab === 'terminal' && (
-          <div className="text-left glass-card p-6 border-secondary/30 shadow-2xl font-mono text-xs max-w-3xl mx-auto rounded-2xl overflow-hidden bg-bg-secondary/95">
-            {/* Terminal Title Bar */}
-            <div className="flex items-center justify-between pb-3 border-b border-border-subtle mb-4">
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-accent-red opacity-80" />
-                <span className="w-3 h-3 rounded-full bg-accent-amber opacity-80" />
-                <span className="w-3 h-3 rounded-full bg-accent-green opacity-80" />
-                <span className="text-[11px] text-text-muted font-bold ml-2">
-                  vinesh@engineering-lab:~ (bash)
+          {/* Resume Download Card */}
+          <TiltCard maxTilt={3} className="rounded-2xl">
+            <a
+              href="/resume.pdf"
+              download="Vinesh_Shanmugam_Resume.pdf"
+              className="glass-card p-5 flex flex-col items-center gap-2.5 group border-white/10 hover:border-accent-amber/40 hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] transition-all duration-300 block text-center h-full justify-between"
+              role="listitem"
+              aria-label="Download Official Resume PDF"
+            >
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-md"
+                style={{ backgroundColor: '#F59E0B15', border: '1px solid #F59E0B35' }}
+              >
+                <span style={{ color: '#F59E0B', display: 'flex' }}>
+                  <FileText size={20} />
                 </span>
               </div>
-              <span className="text-[10px] text-primary">STATUS: INTERACTIVE</span>
-            </div>
+              <div>
+                <p className="font-bold text-text-bright text-sm group-hover:text-accent-amber transition-colors">
+                  Resume PDF
+                </p>
+                <p className="font-mono text-[10px] text-text-muted mt-0.5">
+                  Download Official PDF
+                </p>
+              </div>
+              <ExternalLink size={12} className="text-text-muted group-hover:text-accent-amber transition-colors mt-auto" aria-hidden="true" />
+            </a>
+          </TiltCard>
+        </div>
 
-            {/* Quick Command Pills */}
-            <div className="flex flex-wrap items-center gap-1.5 mb-4">
-              <span className="text-[10px] text-text-muted">QUICK COMMANDS:</span>
-              {['help', 'whoami', 'projects', 'skills', 'contact', 'resume', 'clear'].map((cmd) => (
-                <button
-                  key={cmd}
-                  onClick={() => executeCommand(cmd)}
-                  className="px-2 py-0.5 rounded bg-bg-primary border border-border-subtle text-[10px] text-primary hover:border-primary transition-colors"
-                >
-                  {cmd}
-                </button>
-              ))}
-            </div>
+        {/* Magnetic Direct CTA Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-14">
+          <MagneticButton strength={0.3}>
+            <a
+              href="mailto:shanmugamvinesh75@gmail.com"
+              className="btn-primary text-sm sm:text-base px-8 py-3.5 inline-flex items-center gap-2.5 shadow-[0_0_30px_rgba(0,212,255,0.3)] hover:shadow-[0_0_50px_rgba(0,212,255,0.5)] font-bold rounded-2xl"
+              aria-label="Send direct email to Vinesh"
+            >
+              <Mail size={18} />
+              START A CONVERSATION
+              <ArrowRight size={16} />
+            </a>
+          </MagneticButton>
 
-            {/* Terminal Output Logs */}
-            <div className="space-y-3 max-h-[300px] overflow-y-auto no-scrollbar pr-2 mb-4">
-              {commandLogs.map((log) => (
-                <div key={log.id} className="space-y-1">
-                  <div className="flex items-center gap-2 text-text-muted">
-                    <span className="text-accent-green font-bold">vinesh@lab:~$</span>
-                    <span className="text-text-bright font-semibold">{log.cmd}</span>
-                    <span className="text-[9px] ml-auto">{log.time}</span>
-                  </div>
-                  <div className="pl-4 text-text-secondary">{log.output}</div>
-                </div>
-              ))}
-              <div ref={terminalEndRef} />
-            </div>
+          <MagneticButton strength={0.2}>
+            <a
+              href="/resume.pdf"
+              download="Vinesh_Shanmugam_Resume.pdf"
+              className="btn-outline text-sm sm:text-base px-6 py-3.5 inline-flex items-center gap-2 font-semibold rounded-2xl border-white/15 hover:border-white/40"
+              aria-label="Download Official Resume PDF"
+            >
+              <ExternalLink size={16} />
+              Download Resume PDF
+            </a>
+          </MagneticButton>
+        </div>
 
-            {/* Command Input Form */}
-            <form onSubmit={handleFormSubmit} className="flex items-center gap-2 pt-3 border-t border-border-subtle">
-              <span className="text-accent-green font-bold flex-shrink-0">vinesh@lab:~$</span>
-              <input
-                type="text"
-                value={inputVal}
-                onChange={(e) => setInputVal(e.target.value)}
-                placeholder="Type command ('help', 'projects', 'whoami', 'resume')..."
-                className="flex-1 bg-transparent text-text-bright focus:outline-none text-xs font-mono placeholder:text-text-muted"
-                autoFocus
-              />
-              <button
-                type="submit"
-                className="p-1.5 rounded bg-primary/20 text-primary hover:bg-primary hover:text-bg-primary transition-colors"
-                title="Execute Command"
-              >
-                <CornerDownLeft size={14} />
-              </button>
-            </form>
+        {/* 2. Interactive Terminal Console (Below Plain Contact Block, without autoFocus) */}
+        <div className="text-left glass-card p-6 border-secondary/30 shadow-2xl font-mono text-xs max-w-3xl mx-auto rounded-2xl overflow-hidden bg-bg-secondary/95">
+          {/* Terminal Title Bar */}
+          <div className="flex items-center justify-between pb-3 border-b border-border-subtle mb-4">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-accent-red opacity-80" />
+              <span className="w-3 h-3 rounded-full bg-accent-amber opacity-80" />
+              <span className="w-3 h-3 rounded-full bg-accent-green opacity-80" />
+              <span className="text-[11px] text-text-muted font-bold ml-2">
+                vinesh@engineering-lab:~ (bash)
+              </span>
+            </div>
+            <span className="text-[10px] text-primary">DISPATCH CONSOLE</span>
           </div>
-        )}
+
+          {/* Quick Command Pills */}
+          <div className="flex flex-wrap items-center gap-1.5 mb-4">
+            <span className="text-[10px] text-text-muted">QUICK COMMANDS:</span>
+            {['help', 'whoami', 'projects', 'skills', 'contact', 'resume', 'clear'].map((cmd) => (
+              <button
+                key={cmd}
+                onClick={() => executeCommand(cmd)}
+                className="px-2 py-0.5 rounded bg-bg-primary border border-border-subtle text-[10px] text-primary hover:border-primary transition-colors"
+              >
+                {cmd}
+              </button>
+            ))}
+          </div>
+
+          {/* Terminal Output Logs */}
+          <div className="space-y-3 max-h-[260px] overflow-y-auto no-scrollbar pr-2 mb-4">
+            {commandLogs.map((log) => (
+              <div key={log.id} className="space-y-1">
+                <div className="flex items-center gap-2 text-text-muted">
+                  <span className="text-accent-green font-bold">vinesh@lab:~$</span>
+                  <span className="text-text-bright font-semibold">{log.cmd}</span>
+                  <span className="text-[9px] ml-auto">{log.time}</span>
+                </div>
+                <div className="pl-4 text-text-secondary">{log.output}</div>
+              </div>
+            ))}
+            <div ref={terminalEndRef} />
+          </div>
+
+          {/* Command Input Form - NOTE: autoFocus intentionally removed */}
+          <form onSubmit={handleFormSubmit} className="flex items-center gap-2 pt-3 border-t border-border-subtle">
+            <span className="text-accent-green font-bold flex-shrink-0">vinesh@lab:~$</span>
+            <input
+              type="text"
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              placeholder="Type command ('help', 'projects', 'whoami', 'resume')..."
+              className="flex-1 bg-transparent text-text-bright focus:outline-none text-xs font-mono placeholder:text-text-muted"
+              aria-label="Terminal command input"
+            />
+            <button
+              type="submit"
+              className="p-1.5 rounded bg-primary/20 text-primary hover:bg-primary hover:text-bg-primary transition-colors"
+              title="Execute Command"
+              aria-label="Execute command"
+            >
+              <CornerDownLeft size={14} />
+            </button>
+          </form>
+        </div>
 
         <p className="mt-8 font-mono text-xs text-text-muted">
           Available for engineering roles · research collaborations · hackathons · startup projects

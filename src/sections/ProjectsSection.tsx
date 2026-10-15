@@ -7,10 +7,10 @@ import { animateProjectCards } from '../animations/anime-utils';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import ProjectCard from '../components/ProjectCard';
 import SectionLightSweep from '../components/SectionLightSweep';
-import { projects } from '../data/projects';
+import { projects, hasProjectEvidence } from '../data/projects';
 import type { Project } from '../data/projects';
 
-import { Layers, LayoutGrid } from 'lucide-react';
+import { Layers, LayoutGrid, ExternalLink, Video } from 'lucide-react';
 
 export default function ProjectsSection() {
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.05 });
@@ -21,7 +21,18 @@ export default function ProjectsSection() {
 
   const filterTabs = ['All', 'Featured', 'Embedded AI', 'Healthcare', 'IoT', 'Hardware / Embedded'];
 
-  const displayed = projects.filter((proj) => {
+  const publicEvidenceCount = projects.filter(hasProjectEvidence).length;
+
+  const sortedProjects = [...projects].sort((a, b) => {
+    const aEvidence = hasProjectEvidence(a) ? 1 : 0;
+    const bEvidence = hasProjectEvidence(b) ? 1 : 0;
+    if (bEvidence !== aEvidence) return bEvidence - aEvidence;
+    const aFeatured = a.featured ? 1 : 0;
+    const bFeatured = b.featured ? 1 : 0;
+    return bFeatured - aFeatured;
+  });
+
+  const displayed = sortedProjects.filter((proj) => {
     if (activeFilter === 'All') return true;
     if (activeFilter === 'Featured') return proj.featured;
     if (activeFilter === 'Embedded AI') {
@@ -70,7 +81,7 @@ export default function ProjectsSection() {
       aria-labelledby="projects-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        <SectionLightSweep actLabel="ACT 03" actTitle="SYSTEMS ARCHIVE" isVisible={isVisible} />
+        <SectionLightSweep actLabel="ACT 03" actTitle="PROJECTS" isVisible={isVisible} />
       </div>
 
       <div className="absolute inset-0 grid-bg opacity-15 pointer-events-none" aria-hidden="true" />
@@ -79,12 +90,9 @@ export default function ProjectsSection() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
           <div>
-            <span className="section-label">PROJECTS ARCHIVE</span>
+            <span className="section-label">PROJECTS</span>
             <h2 id="projects-heading" className="text-4xl sm:text-5xl font-black text-text-bright mt-2 tracking-tight">
-              Engineering{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-cyan-400 to-secondary">
-                Systems
-              </span>
+              Projects
             </h2>
             <p className="section-subtitle mt-3 max-w-xl">
               End-to-end systems built across sensors, firmware, machine learning and full-stack web applications.
@@ -120,11 +128,11 @@ export default function ProjectsSection() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 bg-[#0C0C0C] p-2.5 rounded-xl border border-border-subtle">
+            <div className="flex flex-wrap items-center gap-2 bg-[#0C0C0C] p-2.5 rounded-xl border border-border-subtle">
               <span className="font-mono text-xs text-text-muted">{projects.length} PROJECTS</span>
               <div className="w-px h-4 bg-border-subtle" />
-              <span className="font-mono text-xs text-accent-green font-semibold">
-                {projects.filter((p) => p.status === 'Active' || p.status === 'In Progress').length} ACTIVE NODES
+              <span className="font-mono text-xs text-primary font-semibold">
+                {publicEvidenceCount} of {projects.length} projects have public code or demos
               </span>
             </div>
           </div>
@@ -287,14 +295,47 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
           </div>
         </div>
 
+        {project.role && (
+          <div className="mb-6">
+            <p className="font-mono text-xs text-text-muted uppercase tracking-widest mb-1">Role</p>
+            <p className="text-sm font-medium text-text-bright">{project.role}</p>
+          </div>
+        )}
+
+        {project.results && project.results.length > 0 && (
+          <div className="mb-6 p-4 rounded-xl bg-bg-primary/90 border border-border-subtle">
+            <p className="font-mono text-xs text-accent-green uppercase tracking-widest mb-2 font-semibold">Measured Results</p>
+            <ul className="list-disc list-inside space-y-1 text-xs text-text-secondary">
+              {project.results.map((res, idx) => (
+                <li key={idx}>{res}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-border-subtle">
-          {project.githubUrl ? (
+          {project.githubUrl && (
             <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm flex items-center gap-2 shadow-glow-sm">
               <GithubIcon size={16} />
               View on GitHub
             </a>
-          ) : (
-            <span className="btn-ghost text-sm opacity-50 cursor-not-allowed">GitHub — Coming Soon</span>
+          )}
+          {project.liveUrl && (
+            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm flex items-center gap-2">
+              <ExternalLink size={16} />
+              Live Demo
+            </a>
+          )}
+          {project.demoVideoUrl && (
+            <a href={project.demoVideoUrl} target="_blank" rel="noopener noreferrer" className="btn-outline text-sm flex items-center gap-2">
+              <Video size={16} />
+              Video Demo
+            </a>
+          )}
+          {!project.githubUrl && !project.liveUrl && !project.demoVideoUrl && (!project.images || project.images.length === 0) && (
+            <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-mono text-text-muted bg-white/5 border border-white/10">
+              No public code yet
+            </span>
           )}
           <button
             onClick={() => {

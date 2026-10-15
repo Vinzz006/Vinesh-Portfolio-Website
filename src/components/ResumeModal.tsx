@@ -60,7 +60,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
 
           <div className="flex items-center gap-2">
             <a
-              href="/Vinesh_Shanmugam_Resume.pdf"
+              href="/resume.pdf"
               download="Vinesh_Shanmugam_Resume.pdf"
               className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5 shadow-glow-sm"
               title="Download PDF Resume"
@@ -69,7 +69,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               <span>Download PDF</span>
             </a>
             <a
-              href="/Vinesh_Shanmugam_Resume.pdf"
+              href="/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-outline text-xs py-1.5 px-3 hidden sm:flex items-center gap-1.5"
@@ -248,7 +248,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
           </span>
           <div className="flex items-center gap-3">
             <a
-              href="/Vinesh_Shanmugam_Resume.pdf"
+              href="/resume.pdf"
               download="Vinesh_Shanmugam_Resume.pdf"
               className="btn-primary text-xs py-2 px-4 flex items-center gap-2 shadow-glow-sm"
             >

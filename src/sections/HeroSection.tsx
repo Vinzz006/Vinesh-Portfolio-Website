@@ -1,18 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Mail, ChevronDown, FileText, Cpu, Activity, Radio, Sparkles } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
 import { animateHeroOpening } from '../animations/anime-utils';
 import { calculateParallax } from '../animations/heroAnimations';
-import { useReducedMotion } from '../hooks/useReducedMotion';
-import vineshPortrait from '../assets/vinesh_portrait.jpg';
+import { useReducedMotion, useLowPower } from '../hooks/useReducedMotion';
+import vineshPortrait from '../assets/vinesh_portrait.webp';
 import ResumeModal from '../components/ResumeModal';
 import { Spotlight } from '../components/ui/Spotlight';
 import { Meteors } from '../components/ui/Meteors';
 import { Marquee } from '../components/ui/Marquee';
 import { BorderBeam } from '../components/ui/BorderBeam';
-import HeroTechnologicalCore from '../components/3d/HeroTechnologicalCore';
 import MagneticButton from '../components/motion/MagneticButton';
+import { HERO_TITLE, HERO_SUBTITLE } from '../data/profile';
+
+const HeroTechnologicalCore = lazy(() => import('../components/3d/HeroTechnologicalCore'));
 
 const techBadges = [
   'ESP32 Microcontroller',
@@ -32,6 +34,7 @@ const techBadges = [
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  const lowPower = useLowPower();
   const [resumeOpen, setResumeOpen] = useState(false);
   const [parallaxPos, setParallaxPos] = useState({ x: 0, y: 0, rotateX: 0, rotateY: 0 });
 
@@ -45,7 +48,7 @@ export default function HeroSection() {
 
   // Damping Mouse Parallax
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (reduced) return;
+    if (reduced || lowPower) return;
     const { x, y, rotateX, rotateY } = calculateParallax(
       e.clientX,
       e.clientY,
@@ -73,14 +76,18 @@ export default function HeroSection() {
       className="hero-section min-h-screen flex flex-col justify-center relative overflow-hidden pt-24 pb-12"
       aria-labelledby="hero-heading"
     >
-      {/* Central Interactive 3D Technological Core (R3F & Three.js) */}
-      <HeroTechnologicalCore mouseX={parallaxPos.x * 0.04} mouseY={parallaxPos.y * 0.04} />
+      {/* Central Interactive 3D Technological Core (R3F & Three.js) - Skipped in lowPower */}
+      {!lowPower && (
+        <Suspense fallback={<div className="absolute inset-0 bg-transparent pointer-events-none" />}>
+          <HeroTechnologicalCore mouseX={parallaxPos.x * 0.04} mouseY={parallaxPos.y * 0.04} />
+        </Suspense>
+      )}
 
       {/* 1. Spotlight Glow Accent */}
       <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="#00D4FF" />
 
-      {/* 2. Micro Meteors Atmospheric Field */}
-      <Meteors number={12} />
+      {/* 2. Micro Meteors Atmospheric Field - Skipped in lowPower */}
+      {!lowPower && <Meteors number={12} />}
 
       {/* 3. Subtle Cybernetic Grid */}
       <div
@@ -110,8 +117,8 @@ export default function HeroSection() {
             <div className="hero-label mb-5">
               <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#0C0C0C]/90 border border-primary/30 backdrop-blur-md shadow-[0_0_20px_rgba(0,212,255,0.15)]">
                 <span className="w-2 h-2 rounded-full bg-accent-green shadow-[0_0_8px_#10B981] animate-pulse" />
-                <span className="font-mono text-xs tracking-[0.25em] uppercase text-primary font-bold">
-                  AI / ML • FULL STACK • IoT • EMBEDDED
+                <span className="font-mono text-xs tracking-[0.2em] uppercase text-primary font-bold">
+                  {HERO_TITLE}
                 </span>
               </div>
             </div>
@@ -126,13 +133,15 @@ export default function HeroSection() {
             </h1>
 
             {/* Subtitle / Spec */}
-            <p
-              className="hero-subtitle font-mono text-xs sm:text-sm tracking-[0.25em] text-primary/90 mb-5 uppercase flex items-center gap-2 font-semibold"
-              style={{ opacity: 0 }}
-            >
-              <Cpu size={15} className="text-primary animate-pulse" />
-              AI/ML Developer • Full-Stack Developer • IoT & Embedded Systems
-            </p>
+            <div className="hero-subtitle mb-5" style={{ opacity: 0 }}>
+              <p className="font-mono text-xs sm:text-sm tracking-[0.2em] text-primary/90 uppercase flex items-center gap-2 font-semibold">
+                <Cpu size={15} className="text-primary animate-pulse" />
+                {HERO_TITLE}
+              </p>
+              <p className="font-mono text-xs text-text-muted mt-1 tracking-wider">
+                {HERO_SUBTITLE}
+              </p>
+            </div>
 
             {/* Core Brand Statement */}
             <p
@@ -154,14 +163,14 @@ export default function HeroSection() {
               on-device ML inference, cloud platforms and real-time dashboard applications.
             </p>
 
-            {/* Live Data Flow Telemetry Preview */}
+            {/* System Pipeline Architecture Preview */}
             <div className="hero-hud-data mb-8 p-3 rounded-xl bg-[#0C0C0C]/80 border border-border-subtle backdrop-blur-md max-w-xl" style={{ opacity: 0 }}>
               <div className="flex items-center justify-between mb-2">
                 <span className="font-mono text-[10px] text-text-muted uppercase tracking-widest flex items-center gap-1.5">
                   <Activity size={12} className="text-accent-green" />
-                  REAL-TIME PIPELINE TELEMETRY
+                  SYSTEM PIPELINE ARCHITECTURE
                 </span>
-                <span className="font-mono text-[10px] text-primary font-bold">60 FPS // STREAM ACTIVE</span>
+                <span className="font-mono text-[10px] text-primary font-bold">ARCHITECTURE PREVIEW</span>
               </div>
               <div className="grid grid-cols-6 gap-1 font-mono text-[9px] text-center">
                 <div className="p-1.5 rounded bg-[#050505] border border-border-subtle text-accent-green font-semibold">SENSOR</div>

@@ -2,7 +2,7 @@ import { Suspense, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Points, PointMaterial, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
-import vineshCinematic from '../../assets/vinesh_cinematic_intro.jpg';
+import vineshCinematic from '../../assets/vinesh_cinematic_intro.webp';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface Vinzz3DSceneProps {

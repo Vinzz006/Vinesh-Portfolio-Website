@@ -18,9 +18,24 @@ export interface Project {
   status: 'Active' | 'In Progress' | 'Research' | 'Complete';
   githubUrl: string | null;
   liveUrl: string | null;
+  demoVideoUrl?: string | null;
+  images?: string[];
+  role?: string;
+  results?: string[];
+  evidence?: boolean;
   featured: boolean;
   highlight?: string;
 }
+
+export function hasProjectEvidence(project: Project): boolean {
+  return Boolean(
+    project.githubUrl ||
+    project.liveUrl ||
+    project.demoVideoUrl ||
+    (project.images && project.images.length > 0)
+  );
+}
+
 
 export const projects: Project[] = [
   {
@@ -85,8 +100,18 @@ export const projects: Project[] = [
       },
     ],
     status: 'Active',
+    // TODO_USER: Add public repository URL
     githubUrl: null,
+    // TODO_USER: Add live demo URL
     liveUrl: null,
+    // TODO_USER: Add demo video URL (optional)
+    demoVideoUrl: null,
+    // TODO_USER: Add project screenshot/diagram paths (optional)
+    images: [],
+    // TODO_USER: Specify engineering role
+    role: undefined,
+    // TODO_USER: Specify verified results/metrics
+    results: [],
     featured: true,
     highlight: 'Edge AI · Fall Detection',
   },
@@ -145,8 +170,18 @@ export const projects: Project[] = [
       },
     ],
     status: 'In Progress',
+    // TODO_USER: Add public repository URL
     githubUrl: null,
+    // TODO_USER: Add live demo URL
     liveUrl: null,
+    // TODO_USER: Add demo video URL (optional)
+    demoVideoUrl: null,
+    // TODO_USER: Add project screenshot/diagram paths (optional)
+    images: [],
+    // TODO_USER: Specify engineering role
+    role: undefined,
+    // TODO_USER: Specify verified results/metrics
+    results: [],
     featured: true,
     highlight: 'Healthcare AI · Explainable AI',
   },
@@ -205,8 +240,18 @@ export const projects: Project[] = [
       },
     ],
     status: 'In Progress',
+    // TODO_USER: Add public repository URL
     githubUrl: null,
+    // TODO_USER: Add live demo URL
     liveUrl: null,
+    // TODO_USER: Add demo video URL (optional)
+    demoVideoUrl: null,
+    // TODO_USER: Add project screenshot/diagram paths (optional)
+    images: [],
+    // TODO_USER: Specify engineering role
+    role: undefined,
+    // TODO_USER: Specify verified results/metrics
+    results: [],
     featured: true,
     highlight: 'IoT · Energy AI',
   },
@@ -258,8 +303,18 @@ export const projects: Project[] = [
       },
     ],
     status: 'Research',
+    // TODO_USER: Add public repository URL
     githubUrl: null,
+    // TODO_USER: Add live demo URL
     liveUrl: null,
+    // TODO_USER: Add demo video URL (optional)
+    demoVideoUrl: null,
+    // TODO_USER: Add project screenshot/diagram paths (optional)
+    images: [],
+    // TODO_USER: Specify engineering role
+    role: undefined,
+    // TODO_USER: Specify verified results/metrics
+    results: [],
     featured: true,
     highlight: 'Computer Vision · Accessibility',
   },
@@ -311,8 +366,18 @@ export const projects: Project[] = [
       },
     ],
     status: 'In Progress',
+    // TODO_USER: Add public repository URL
     githubUrl: null,
+    // TODO_USER: Add live demo URL
     liveUrl: null,
+    // TODO_USER: Add demo video URL (optional)
+    demoVideoUrl: null,
+    // TODO_USER: Add project screenshot/diagram paths (optional)
+    images: [],
+    // TODO_USER: Specify engineering role
+    role: undefined,
+    // TODO_USER: Specify verified results/metrics
+    results: [],
     featured: false,
     highlight: 'DevOps · Automation',
   },
@@ -364,8 +429,18 @@ export const projects: Project[] = [
       },
     ],
     status: 'In Progress',
+    // TODO_USER: Add public repository URL
     githubUrl: null,
+    // TODO_USER: Add live demo URL
     liveUrl: null,
+    // TODO_USER: Add demo video URL (optional)
+    demoVideoUrl: null,
+    // TODO_USER: Add project screenshot/diagram paths (optional)
+    images: [],
+    // TODO_USER: Specify engineering role
+    role: undefined,
+    // TODO_USER: Specify verified results/metrics
+    results: [],
     featured: false,
     highlight: 'NLP · Healthcare',
   },
@@ -417,8 +492,18 @@ export const projects: Project[] = [
       },
     ],
     status: 'Complete',
+    // TODO_USER: Add public repository URL
     githubUrl: null,
+    // TODO_USER: Add live demo URL
     liveUrl: null,
+    // TODO_USER: Add demo video URL (optional)
+    demoVideoUrl: null,
+    // TODO_USER: Add project screenshot/diagram paths (optional)
+    images: [],
+    // TODO_USER: Specify engineering role
+    role: undefined,
+    // TODO_USER: Specify verified results/metrics
+    results: [],
     featured: false,
     highlight: 'NLP · AgriTech',
   },
@@ -470,8 +555,18 @@ export const projects: Project[] = [
       },
     ],
     status: 'Complete',
+    // TODO_USER: Add public repository URL
     githubUrl: null,
+    // TODO_USER: Add live demo URL
     liveUrl: null,
+    // TODO_USER: Add demo video URL (optional)
+    demoVideoUrl: null,
+    // TODO_USER: Add project screenshot/diagram paths (optional)
+    images: [],
+    // TODO_USER: Specify engineering role
+    role: undefined,
+    // TODO_USER: Specify verified results/metrics
+    results: [],
     featured: false,
     highlight: 'Deep Learning · Medical CV',
   },
@@ -523,8 +618,18 @@ export const projects: Project[] = [
       },
     ],
     status: 'In Progress',
+    // TODO_USER: Add public repository URL
     githubUrl: null,
+    // TODO_USER: Add live demo URL
     liveUrl: null,
+    // TODO_USER: Add demo video URL (optional)
+    demoVideoUrl: null,
+    // TODO_USER: Add project screenshot/diagram paths (optional)
+    images: [],
+    // TODO_USER: Specify engineering role
+    role: undefined,
+    // TODO_USER: Specify verified results/metrics
+    results: [],
     featured: false,
     highlight: 'SaaS · AI · Railway',
   },
@@ -576,8 +681,18 @@ export const projects: Project[] = [
       },
     ],
     status: 'Complete',
+    // TODO_USER: Add public repository URL
     githubUrl: null,
+    // TODO_USER: Add live demo URL
     liveUrl: null,
+    // TODO_USER: Add demo video URL (optional)
+    demoVideoUrl: null,
+    // TODO_USER: Add project screenshot/diagram paths (optional)
+    images: [],
+    // TODO_USER: Specify engineering role
+    role: undefined,
+    // TODO_USER: Specify verified results/metrics
+    results: [],
     featured: false,
     highlight: 'IoT · Real-Time',
   },

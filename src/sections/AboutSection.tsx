@@ -1,18 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Cpu, Brain, Globe, Cloud, Zap, Activity, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { animateSectionEntrance } from '../animations/anime-utils';
-import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useReducedMotion, useLowPower } from '../hooks/useReducedMotion';
 import SectionLightSweep from '../components/SectionLightSweep';
 import { NumberTicker } from '../components/ui/NumberTicker';
 import { BentoGrid, BentoGridItem } from '../components/ui/BentoGrid';
 import { BorderBeam } from '../components/ui/BorderBeam';
-import About3DDecorations from '../components/3d/About3DDecorations';
 import ScrollTextReveal from '../components/motion/ScrollTextReveal';
 import { projects } from '../data/projects';
 import { timelineItems } from '../data/experience';
 import { measuredResults } from '../data/metrics';
+
+const About3DDecorations = lazy(() => import('../components/3d/About3DDecorations'));
 
 const stackLayers = [
   { label: 'Hardware', color: '#10B981' },
@@ -26,6 +27,7 @@ const stackLayers = [
 export default function AboutSection() {
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.1 });
   const reduced = useReducedMotion();
+  const lowPower = useLowPower();
 
   // Compute metrics strictly from repository data
   const projectsDocumented = projects.length;
@@ -56,8 +58,12 @@ export default function AboutSection() {
       className="py-24 relative overflow-hidden bg-[#050505]"
       aria-labelledby="about-heading"
     >
-      {/* 3D Ambient Background Geometries */}
-      <About3DDecorations />
+      {/* 3D Ambient Background Geometries - Skipped in lowPower */}
+      {!lowPower && (
+        <Suspense fallback={null}>
+          <About3DDecorations />
+        </Suspense>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 relative z-10">
         <SectionLightSweep actLabel="ACT 02" actTitle="ENGINEERING ARCHITECTURE" isVisible={isVisible} />

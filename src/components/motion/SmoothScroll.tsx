@@ -2,15 +2,16 @@ import { useEffect } from 'react';
 import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useReducedMotion, useLowPower } from '../../hooks/useReducedMotion';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const reduced = useReducedMotion();
+  const lowPower = useLowPower();
 
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || lowPower) return;
 
     // Initialize Lenis smooth scrolling
     const lenis = new Lenis({

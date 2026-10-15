@@ -1,17 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Layers, Orbit, ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { animateSkills } from '../animations/anime-utils';
-import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useReducedMotion, useLowPower } from '../hooks/useReducedMotion';
 import { skillCategories } from '../data/skills';
 import SectionLightSweep from '../components/SectionLightSweep';
-import Skills3DUniverse from '../components/3d/Skills3DUniverse';
 import TiltCard from '../components/motion/TiltCard';
+
+const Skills3DUniverse = lazy(() => import('../components/3d/Skills3DUniverse'));
 
 export default function SkillsSection() {
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.1 });
   const reduced = useReducedMotion();
+  const lowPower = useLowPower();
   const [activeCategory, setActiveCategory] = useState(skillCategories[0].id);
   const [viewMode, setViewMode] = useState<'3d' | 'matrix'>('3d');
   const [showFamiliar, setShowFamiliar] = useState(false);
@@ -55,8 +57,8 @@ export default function SkillsSection() {
             </p>
           </div>
 
-          {/* View Switcher: 3D Universe vs Matrix */}
-          {!reduced && (
+          {/* View Switcher: 3D Universe vs Matrix - Hidden in lowPower or reduced motion */}
+          {!reduced && !lowPower && (
             <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#0C0C0C] border border-border-subtle self-start sm:self-auto">
               <button
                 onClick={() => setViewMode('3d')}
@@ -84,13 +86,15 @@ export default function SkillsSection() {
           )}
         </div>
 
-        {/* 3D Skill Universe Canvas (Shown in 3D mode) */}
-        {!reduced && viewMode === '3d' && (
+        {/* 3D Skill Universe Canvas (Shown in 3D mode, skipped in lowPower) */}
+        {!reduced && !lowPower && viewMode === '3d' && (
           <div className="mb-10">
-            <Skills3DUniverse
-              activeCategory={activeCategory}
-              onSelectCategory={handleSelectCategory}
-            />
+            <Suspense fallback={<div className="w-full h-80 rounded-2xl bg-bg-secondary/40 border border-border-subtle flex items-center justify-center font-mono text-xs text-text-muted">Loading 3D Universe...</div>}>
+              <Skills3DUniverse
+                activeCategory={activeCategory}
+                onSelectCategory={handleSelectCategory}
+              />
+            </Suspense>
           </div>
         )}
 

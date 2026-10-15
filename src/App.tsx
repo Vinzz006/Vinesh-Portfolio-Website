@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import Navigation from './components/Navigation';
 import HeroSection from './sections/HeroSection';
 import AboutSection from './sections/AboutSection';
@@ -13,22 +13,29 @@ import Footer from './sections/Footer';
 import CinematicCursor from './components/CinematicCursor';
 import AtmosphericParticles from './components/AtmosphericParticles';
 import SmoothScroll from './components/motion/SmoothScroll';
-import Cinematic3DIntro from './components/intro/Cinematic3DIntro';
+import { useLowPower } from './hooks/useReducedMotion';
+
+const Cinematic3DIntro = lazy(() => import('./components/intro/Cinematic3DIntro'));
 
 export default function App() {
   const [introDone, setIntroDone] = useState(false);
+  const lowPower = useLowPower();
 
   return (
     <SmoothScroll>
       <div className="min-h-screen bg-bg-primary text-text-primary relative selection:bg-primary/20 selection:text-primary overflow-x-hidden">
-        {/* VINZZ Cinematic 3D Intro Sequence */}
-        <Cinematic3DIntro onComplete={() => setIntroDone(true)} />
+        {/* VINZZ Cinematic 3D Intro Sequence - Skipped in lowPower mode */}
+        {!lowPower && !introDone && (
+          <Suspense fallback={null}>
+            <Cinematic3DIntro onComplete={() => setIntroDone(true)} />
+          </Suspense>
+        )}
 
-        {/* Cinematic Custom Motion Cursor (Desktop) */}
-        <CinematicCursor />
+        {/* Cinematic Custom Motion Cursor (Desktop) - Disabled in lowPower mode */}
+        {!lowPower && <CinematicCursor />}
 
-        {/* Lightweight Atmospheric Particles Canvas */}
-        <AtmosphericParticles />
+        {/* Lightweight Atmospheric Particles Canvas - Disabled in lowPower mode */}
+        {!lowPower && <AtmosphericParticles />}
 
         {/* Accessibility Skip Link */}
         <a

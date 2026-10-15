@@ -1,19 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Mail, ChevronDown, FileText, Cpu, Activity, Radio, Sparkles } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
 import { animateHeroOpening } from '../animations/anime-utils';
 import { calculateParallax } from '../animations/heroAnimations';
-import { useReducedMotion } from '../hooks/useReducedMotion';
-import vineshPortrait from '../assets/vinesh_portrait.jpg';
+import { useReducedMotion, useLowPower } from '../hooks/useReducedMotion';
+import vineshPortrait from '../assets/vinesh_portrait.webp';
 import ResumeModal from '../components/ResumeModal';
 import { Spotlight } from '../components/ui/Spotlight';
 import { Meteors } from '../components/ui/Meteors';
 import { Marquee } from '../components/ui/Marquee';
 import { BorderBeam } from '../components/ui/BorderBeam';
-import HeroTechnologicalCore from '../components/3d/HeroTechnologicalCore';
 import MagneticButton from '../components/motion/MagneticButton';
 import { HERO_TITLE, HERO_SUBTITLE } from '../data/profile';
+
+const HeroTechnologicalCore = lazy(() => import('../components/3d/HeroTechnologicalCore'));
 
 const techBadges = [
   'ESP32 Microcontroller',
@@ -33,6 +34,7 @@ const techBadges = [
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  const lowPower = useLowPower();
   const [resumeOpen, setResumeOpen] = useState(false);
   const [parallaxPos, setParallaxPos] = useState({ x: 0, y: 0, rotateX: 0, rotateY: 0 });
 
@@ -46,7 +48,7 @@ export default function HeroSection() {
 
   // Damping Mouse Parallax
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (reduced) return;
+    if (reduced || lowPower) return;
     const { x, y, rotateX, rotateY } = calculateParallax(
       e.clientX,
       e.clientY,
@@ -74,14 +76,18 @@ export default function HeroSection() {
       className="hero-section min-h-screen flex flex-col justify-center relative overflow-hidden pt-24 pb-12"
       aria-labelledby="hero-heading"
     >
-      {/* Central Interactive 3D Technological Core (R3F & Three.js) */}
-      <HeroTechnologicalCore mouseX={parallaxPos.x * 0.04} mouseY={parallaxPos.y * 0.04} />
+      {/* Central Interactive 3D Technological Core (R3F & Three.js) - Skipped in lowPower */}
+      {!lowPower && (
+        <Suspense fallback={<div className="absolute inset-0 bg-transparent pointer-events-none" />}>
+          <HeroTechnologicalCore mouseX={parallaxPos.x * 0.04} mouseY={parallaxPos.y * 0.04} />
+        </Suspense>
+      )}
 
       {/* 1. Spotlight Glow Accent */}
       <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="#00D4FF" />
 
-      {/* 2. Micro Meteors Atmospheric Field */}
-      <Meteors number={12} />
+      {/* 2. Micro Meteors Atmospheric Field - Skipped in lowPower */}
+      {!lowPower && <Meteors number={12} />}
 
       {/* 3. Subtle Cybernetic Grid */}
       <div

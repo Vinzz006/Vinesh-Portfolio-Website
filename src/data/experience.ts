@@ -24,6 +24,7 @@ export const timelineItems: TimelineItem[] = [
     type: 'internship',
     title: 'Wireless Communication Engineering Intern',
     organization: 'BSNL (Bharat Sanchar Nigam Limited)',
+    // TODO_USER: Replace 'Internship' with verified date range (e.g., 'Jun 2024 – Jul 2024')
     period: 'Internship',
     description:
       'Gained hands-on exposure to wireless communication infrastructure at a telecom service provider, including cellular network architecture, base station equipment, and signal transmission systems. Assisted in monitoring signal quality and studying RF propagation & GSM/LTE fundamentals.',

@@ -114,7 +114,7 @@ export default function ExperienceSection() {
                           <p className="text-text-secondary text-sm font-medium mt-0.5">{item.organization}</p>
                         </div>
                         <span className="font-mono text-xs text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/30 whitespace-nowrap font-bold">
-                          {item.period}
+                          {item.id === 'bsnl' ? (/\d{4}/.test(item.period) ? item.period : 'Internship') : item.period}
                         </span>
                       </div>
                       <p className="text-text-secondary text-sm leading-relaxed mb-4">

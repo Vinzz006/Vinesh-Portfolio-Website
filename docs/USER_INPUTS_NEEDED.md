@@ -111,3 +111,14 @@ Per Phase 2, `measuredResults` is empty by default. To display defensible metric
 
 ## 4. Technical Claims Verification (`docs/CLAIMS_TO_VERIFY.md`)
 - Review each technical claim listed in `docs/CLAIMS_TO_VERIFY.md` and mark as `[x] implemented`, `[ ] planned`, or `[ ] remove`.
+
+---
+
+## 5. TinyML Research Simulator Real Measurements (`src/sections/ResearchSection.tsx`)
+- The TinyML quantization simulator currently displays illustrative constants (148/38/19 KB flash, 42/14/8 KB RAM, 28/7.4/4.1 ms latency, 98.4/97.9/95.8 % accuracy) labeled clearly as `ILLUSTRATIVE SIMULATOR: example values, not measured results`.
+- To replace these with real hardware measurements:
+  - Document test device (e.g. ESP32-WROOM-32, 240MHz)
+  - Document benchmark model framework (e.g. TensorFlow Lite for Microcontrollers / ESP-NN)
+  - Document test dataset, split, and sample size
+  - Document hardware latency measurement technique (e.g. GPIO toggle + logic analyzer / DWT cycle counter)
+

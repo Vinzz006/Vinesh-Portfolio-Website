@@ -154,14 +154,14 @@ export default function HeroSection() {
               on-device ML inference, cloud platforms and real-time dashboard applications.
             </p>
 
-            {/* Live Data Flow Telemetry Preview */}
+            {/* System Pipeline Architecture Preview */}
             <div className="hero-hud-data mb-8 p-3 rounded-xl bg-[#0C0C0C]/80 border border-border-subtle backdrop-blur-md max-w-xl" style={{ opacity: 0 }}>
               <div className="flex items-center justify-between mb-2">
                 <span className="font-mono text-[10px] text-text-muted uppercase tracking-widest flex items-center gap-1.5">
                   <Activity size={12} className="text-accent-green" />
-                  REAL-TIME PIPELINE TELEMETRY
+                  SYSTEM PIPELINE ARCHITECTURE
                 </span>
-                <span className="font-mono text-[10px] text-primary font-bold">60 FPS // STREAM ACTIVE</span>
+                <span className="font-mono text-[10px] text-primary font-bold">ARCHITECTURE PREVIEW</span>
               </div>
               <div className="grid grid-cols-6 gap-1 font-mono text-[9px] text-center">
                 <div className="p-1.5 rounded bg-[#050505] border border-border-subtle text-accent-green font-semibold">SENSOR</div>

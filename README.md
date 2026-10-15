@@ -2,7 +2,7 @@
 
 > **ECE Student · Embedded AI & IoT** · Also builds full-stack dashboards.
 
-Live Site: [https://vinesh-portfolio.vercel.app](https://vinesh-portfolio.vercel.app)  
+Live Site: [https://vinesh-portfolio-website.vercel.app/](https://vinesh-portfolio-website.vercel.app/)  
 Repository: [https://github.com/Vinzz006/Vinesh-Portfolio-Website](https://github.com/Vinzz006/Vinesh-Portfolio-Website)
 
 ---

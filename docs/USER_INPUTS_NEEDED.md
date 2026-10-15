@@ -125,7 +125,7 @@ Per Phase 2, `measuredResults` is empty by default. To display defensible metric
 ---
 
 ## 6. Production Domain & Canonical URL (`src/data/profile.ts`, `index.html`, `public/sitemap.xml`, `public/robots.txt`)
-- The site canonical URL and metadata currently use `https://vinesh-portfolio.vercel.app/`.
+- The site canonical URL and metadata currently use `https://vinesh-portfolio-website.vercel.app/`.
 - If you have configured a custom domain on Vercel (e.g. `https://vineshshanmugam.me` or `https://vinzz.dev`):
   - Update `SITE_URL` in `src/data/profile.ts`.
   - Update canonical and OG URLs in `index.html`.

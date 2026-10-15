@@ -6,4 +6,4 @@ export const HERO_TITLE = 'ECE Student · Embedded AI & IoT';
 export const HERO_SUBTITLE = 'Also builds full-stack dashboards';
 export const OWNER_NAME = 'Vinesh Shanmugam';
 // TODO_USER: Replace with your custom production domain if applicable
-export const SITE_URL = 'https://vinesh-portfolio.vercel.app';
+export const SITE_URL = 'https://vinesh-portfolio-website.vercel.app';

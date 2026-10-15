@@ -37,7 +37,7 @@ export default function SkillsSection() {
       aria-labelledby="skills-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        <SectionLightSweep actLabel="ACT 05" actTitle="CONSTELLATION & STACK" isVisible={isVisible} />
+        <SectionLightSweep actLabel="ACT 05" actTitle="SKILLS" isVisible={isVisible} />
       </div>
 
       <div className="absolute inset-0 grid-bg opacity-15 pointer-events-none" aria-hidden="true" />
@@ -46,12 +46,9 @@ export default function SkillsSection() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
           <div>
-            <span className="section-label">SKILLS & ARCHITECTURE</span>
+            <span className="section-label">SKILLS</span>
             <h2 id="skills-heading" className="text-4xl sm:text-5xl font-black text-text-bright mt-2 tracking-tight">
-              Technology{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-cyan-400 to-secondary">
-                Universe
-              </span>
+              Skills
             </h2>
             <p className="section-subtitle mt-3">
               Full-stack tools, languages, firmware and frameworks I use to build production systems.

@@ -32,7 +32,7 @@ export default function App() {
 
         {/* Accessibility Skip Link */}
         <a
-          href="#home"
+          href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] btn-primary py-2 px-4 text-sm"
         >
           Skip to main content

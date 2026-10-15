@@ -81,7 +81,7 @@ export default function ProjectsSection() {
       aria-labelledby="projects-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        <SectionLightSweep actLabel="ACT 03" actTitle="SYSTEMS ARCHIVE" isVisible={isVisible} />
+        <SectionLightSweep actLabel="ACT 03" actTitle="PROJECTS" isVisible={isVisible} />
       </div>
 
       <div className="absolute inset-0 grid-bg opacity-15 pointer-events-none" aria-hidden="true" />
@@ -90,12 +90,9 @@ export default function ProjectsSection() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
           <div>
-            <span className="section-label">PROJECTS ARCHIVE</span>
+            <span className="section-label">PROJECTS</span>
             <h2 id="projects-heading" className="text-4xl sm:text-5xl font-black text-text-bright mt-2 tracking-tight">
-              Engineering{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-cyan-400 to-secondary">
-                Systems
-              </span>
+              Projects
             </h2>
             <p className="section-subtitle mt-3 max-w-xl">
               End-to-end systems built across sensors, firmware, machine learning and full-stack web applications.

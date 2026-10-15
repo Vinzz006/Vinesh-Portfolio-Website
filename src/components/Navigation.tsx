@@ -5,6 +5,7 @@ import { GithubIcon, LinkedinIcon } from './Icons';
 import { cn } from '../lib/utils';
 import ResumeModal from './ResumeModal';
 import MagneticButton from './motion/MagneticButton';
+import { HERO_TITLE } from '../data/profile';
 
 const navLinks = [
   { href: '#home', label: 'Home' },
@@ -98,7 +99,7 @@ export default function Navigation() {
               </span>
             </div>
             <span className="font-mono text-[9px] text-text-muted tracking-widest mt-1 ml-4 uppercase">
-              AI/ML · FULL STACK · IoT · EMBEDDED
+              {HERO_TITLE}
             </span>
           </a>
 

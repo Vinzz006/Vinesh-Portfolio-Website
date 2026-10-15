@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Layers, Orbit } from 'lucide-react';
+import { Sparkles, Layers, Orbit, ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { animateSkills } from '../animations/anime-utils';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -14,6 +14,12 @@ export default function SkillsSection() {
   const reduced = useReducedMotion();
   const [activeCategory, setActiveCategory] = useState(skillCategories[0].id);
   const [viewMode, setViewMode] = useState<'3d' | 'matrix'>('3d');
+  const [showFamiliar, setShowFamiliar] = useState(false);
+
+  const handleSelectCategory = (id: string) => {
+    setActiveCategory(id);
+    setShowFamiliar(false);
+  };
 
   useEffect(() => {
     if (isVisible) {
@@ -86,7 +92,7 @@ export default function SkillsSection() {
           <div className="mb-10">
             <Skills3DUniverse
               activeCategory={activeCategory}
-              onSelectCategory={setActiveCategory}
+              onSelectCategory={handleSelectCategory}
             />
           </div>
         )}
@@ -101,7 +107,7 @@ export default function SkillsSection() {
                     role="tab"
                     aria-selected={activeCategory === cat.id}
                     aria-controls={`skills-panel-${cat.id}`}
-                    onClick={() => setActiveCategory(cat.id)}
+                    onClick={() => handleSelectCategory(cat.id)}
                     className={`w-full text-left flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 border whitespace-nowrap lg:whitespace-normal ${
                       activeCategory === cat.id
                         ? 'border-opacity-50 text-white shadow-glow-sm'
@@ -136,44 +142,102 @@ export default function SkillsSection() {
             aria-label={`${current.label} skills`}
           >
             <div id="skills-grid">
-              <div className="mb-4 flex items-center gap-3">
-                <div
-                  className="w-1 h-6 rounded-full"
-                  style={{ backgroundColor: current.accent }}
-                  aria-hidden="true"
-                />
-                <h3 className="font-semibold text-text-bright">{current.label}</h3>
-                <span className="font-mono text-xs text-text-muted">{current.skills.length} technologies</span>
+              <div className="mb-6 flex items-center justify-between gap-3 border-b border-border-subtle pb-3">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-1.5 h-6 rounded-full"
+                    style={{ backgroundColor: current.accent }}
+                    aria-hidden="true"
+                  />
+                  <h3 className="font-bold text-text-bright text-lg">{current.label}</h3>
+                </div>
+                <span className="font-mono text-xs text-text-muted">
+                  {current.skills.filter((s) => s.usedInProjects).length} of {current.skills.length} verified in projects
+                </span>
               </div>
-              <motion.div
-                key={current.id}
-                initial={reduced ? {} : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="flex flex-wrap gap-3"
-                role="list"
-              >
-                {current.skills.map((skill, i) => (
-                  <motion.div
-                    key={skill}
-                    role="listitem"
-                    initial={reduced ? {} : { opacity: 0, scale: 0.85 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3, delay: i * 0.04 }}
-                    className="skill-chip px-4 py-2 text-sm hover:border-primary/40 transition-all cursor-default shadow-sm"
-                    style={{
-                      borderColor: current.accent + '35',
-                      color: current.accent + 'EE',
-                      backgroundColor: current.accent + '0B',
-                    }}
+
+              {/* Prominent "Used in projects" group */}
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-3">
+                  <CheckCircle2 size={14} className="text-accent-green" />
+                  <span className="font-mono text-xs font-bold text-text-bright uppercase tracking-wider">
+                    USED IN PROJECTS
+                  </span>
+                  <span className="text-[10px] text-text-muted font-mono">
+                    ({current.skills.filter((s) => s.usedInProjects).length})
+                  </span>
+                </div>
+
+                <motion.div
+                  key={current.id + '-used'}
+                  initial={reduced ? {} : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-wrap gap-2.5"
+                  role="list"
+                >
+                  {current.skills
+                    .filter((s) => s.usedInProjects)
+                    .map((skill, i) => (
+                      <motion.div
+                        key={skill.name}
+                        role="listitem"
+                        initial={reduced ? {} : { opacity: 0, scale: 0.85 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3, delay: i * 0.04 }}
+                        className="skill-chip px-3.5 py-2 text-sm hover:border-primary/40 transition-all cursor-default shadow-sm flex items-center gap-2"
+                        style={{
+                          borderColor: current.accent + '45',
+                          color: current.accent + 'EE',
+                          backgroundColor: current.accent + '10',
+                        }}
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent-green flex-shrink-0" />
+                        <span className="font-medium">{skill.name}</span>
+                      </motion.div>
+                    ))}
+                  {current.skills.filter((s) => s.usedInProjects).length === 0 && (
+                    <p className="text-xs text-text-muted font-mono italic">
+                      No documented project code references in this category yet.
+                    </p>
+                  )}
+                </motion.div>
+              </div>
+
+              {/* Collapsed "Also familiar with" group */}
+              {current.skills.some((s) => !s.usedInProjects) && (
+                <div className="border border-border-subtle rounded-xl p-4 bg-[#0A0A0A]/60">
+                  <button
+                    onClick={() => setShowFamiliar((prev) => !prev)}
+                    className="flex items-center justify-between w-full text-left font-mono text-xs text-text-muted hover:text-text-primary transition-colors"
+                    aria-expanded={showFamiliar}
                   >
-                    {skill}
-                  </motion.div>
-                ))}
-              </motion.div>
+                    <span className="flex items-center gap-2 font-semibold">
+                      ALSO FAMILIAR WITH ({current.skills.filter((s) => !s.usedInProjects).length})
+                    </span>
+                    {showFamiliar ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  </button>
+
+                  {showFamiliar && (
+                    <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-border-subtle/60" role="list">
+                      {current.skills
+                        .filter((s) => !s.usedInProjects)
+                        .map((skill) => (
+                          <div
+                            key={skill.name}
+                            role="listitem"
+                            className="px-3 py-1.5 rounded-lg text-xs font-mono border border-white/10 text-text-muted bg-white/5"
+                          >
+                            {skill.name}
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               <p className="mt-6 font-mono text-[10px] text-text-muted">
-                ─ Hands-on system engineering experience. No arbitrary percentages.
+                ─ Hands-on engineering experience. No arbitrary skill bars or percentages.
               </p>
             </div>
 
@@ -184,10 +248,14 @@ export default function SkillsSection() {
                 {skillCategories.flatMap((cat) =>
                   cat.skills.map((skill) => (
                     <span
-                      key={`${cat.id}-${skill}`}
-                      className="font-mono text-[10px] px-2.5 py-1 rounded-lg border border-border-subtle text-text-muted hover:text-primary hover:border-primary/30 transition-all cursor-default bg-bg-secondary/60"
+                      key={`${cat.id}-${skill.name}`}
+                      className={`font-mono text-[10px] px-2.5 py-1 rounded-lg border transition-all cursor-default ${
+                        skill.usedInProjects
+                          ? 'border-primary/40 text-text-bright bg-primary/10'
+                          : 'border-border-subtle text-text-muted bg-bg-secondary/60'
+                      }`}
                     >
-                      {skill}
+                      {skill.name}
                     </span>
                   ))
                 )}

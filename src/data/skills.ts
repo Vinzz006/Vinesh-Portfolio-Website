@@ -1,11 +1,18 @@
+import { projects } from './projects';
+
+export interface SkillItem {
+  name: string;
+  usedInProjects: boolean;
+}
+
 export interface SkillCategory {
   id: string;
   label: string;
-  skills: string[];
+  skills: SkillItem[];
   accent: string;
 }
 
-export const skillCategories: SkillCategory[] = [
+const rawSkillCategories = [
   {
     id: 'languages',
     label: 'Languages',
@@ -49,3 +56,27 @@ export const skillCategories: SkillCategory[] = [
     skills: ['Anime.js', 'Framer Motion', 'Three.js', 'React Three Fiber', 'SVG Animation'],
   },
 ];
+
+// Set of normalized technologies actually used across projects in projects.ts
+const projectTechSet = new Set(
+  projects.flatMap((p) => p.technologies.map((t) => t.trim().toLowerCase()))
+);
+
+export const isSkillUsedInProjects = (skillName: string): boolean => {
+  const norm = skillName.trim().toLowerCase();
+  for (const tech of projectTechSet) {
+    if (tech === norm) return true;
+    if (norm.length > 2 && (tech.includes(norm) || norm.includes(tech))) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const skillCategories: SkillCategory[] = rawSkillCategories.map((cat) => ({
+  ...cat,
+  skills: cat.skills.map((skillName) => ({
+    name: skillName,
+    usedInProjects: isSkillUsedInProjects(skillName),
+  })),
+}));

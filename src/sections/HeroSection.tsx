@@ -13,6 +13,7 @@ import { Marquee } from '../components/ui/Marquee';
 import { BorderBeam } from '../components/ui/BorderBeam';
 import HeroTechnologicalCore from '../components/3d/HeroTechnologicalCore';
 import MagneticButton from '../components/motion/MagneticButton';
+import { HERO_TITLE, HERO_SUBTITLE } from '../data/profile';
 
 const techBadges = [
   'ESP32 Microcontroller',
@@ -110,8 +111,8 @@ export default function HeroSection() {
             <div className="hero-label mb-5">
               <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#0C0C0C]/90 border border-primary/30 backdrop-blur-md shadow-[0_0_20px_rgba(0,212,255,0.15)]">
                 <span className="w-2 h-2 rounded-full bg-accent-green shadow-[0_0_8px_#10B981] animate-pulse" />
-                <span className="font-mono text-xs tracking-[0.25em] uppercase text-primary font-bold">
-                  AI / ML • FULL STACK • IoT • EMBEDDED
+                <span className="font-mono text-xs tracking-[0.2em] uppercase text-primary font-bold">
+                  {HERO_TITLE}
                 </span>
               </div>
             </div>
@@ -126,13 +127,15 @@ export default function HeroSection() {
             </h1>
 
             {/* Subtitle / Spec */}
-            <p
-              className="hero-subtitle font-mono text-xs sm:text-sm tracking-[0.25em] text-primary/90 mb-5 uppercase flex items-center gap-2 font-semibold"
-              style={{ opacity: 0 }}
-            >
-              <Cpu size={15} className="text-primary animate-pulse" />
-              AI/ML Developer • Full-Stack Developer • IoT & Embedded Systems
-            </p>
+            <div className="hero-subtitle mb-5" style={{ opacity: 0 }}>
+              <p className="font-mono text-xs sm:text-sm tracking-[0.2em] text-primary/90 uppercase flex items-center gap-2 font-semibold">
+                <Cpu size={15} className="text-primary animate-pulse" />
+                {HERO_TITLE}
+              </p>
+              <p className="font-mono text-xs text-text-muted mt-1 tracking-wider">
+                {HERO_SUBTITLE}
+              </p>
+            </div>
 
             {/* Core Brand Statement */}
             <p

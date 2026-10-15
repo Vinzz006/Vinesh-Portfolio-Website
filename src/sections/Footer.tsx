@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Mail, ArrowUp, Command, Keyboard, X } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
+import { HERO_TITLE, HERO_SUBTITLE } from '../data/profile';
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -52,7 +53,7 @@ export default function Footer() {
           <div>
             <p className="font-bold text-text-bright">Vinesh Shanmugam</p>
             <p className="font-mono text-[10px] text-text-muted mt-1 tracking-widest uppercase">
-              ECE Engineer · AI/ML · Embedded Systems · Full-Stack
+              {HERO_TITLE} · {HERO_SUBTITLE}
             </p>
           </div>
 

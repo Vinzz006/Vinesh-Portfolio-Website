@@ -1,4 +1,4 @@
-import { ExternalLink, ArrowRight, Cpu, Activity, CheckCircle2, Sparkles } from 'lucide-react';
+import { ExternalLink, ArrowRight, Cpu, Activity, CheckCircle2, Sparkles, Video } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { GithubIcon } from './Icons';
 import type { Project } from '../data/projects';
@@ -133,8 +133,8 @@ export default function ProjectCard({ project, index, onViewDetails }: ProjectCa
 
         {/* Bottom Actions */}
         <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 mt-auto">
-          <div className="flex items-center gap-2">
-            {project.githubUrl ? (
+          <div className="flex flex-wrap items-center gap-2">
+            {project.githubUrl && (
               <a
                 href={project.githubUrl}
                 target="_blank"
@@ -145,11 +145,6 @@ export default function ProjectCard({ project, index, onViewDetails }: ProjectCa
                 <GithubIcon size={13} />
                 GitHub
               </a>
-            ) : (
-              <span className="btn-outline text-xs py-1.5 opacity-40 cursor-not-allowed flex items-center gap-1.5">
-                <GithubIcon size={13} />
-                Repo Locked
-              </span>
             )}
 
             {project.liveUrl && (
@@ -163,6 +158,25 @@ export default function ProjectCard({ project, index, onViewDetails }: ProjectCa
                 <ExternalLink size={13} />
                 Live Demo
               </a>
+            )}
+
+            {project.demoVideoUrl && (
+              <a
+                href={project.demoVideoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-outline text-xs py-1.5 flex items-center gap-1.5"
+                aria-label={`Demo video for ${project.title}`}
+              >
+                <Video size={13} />
+                Video Demo
+              </a>
+            )}
+
+            {!project.githubUrl && !project.liveUrl && !project.demoVideoUrl && (!project.images || project.images.length === 0) && (
+              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-mono text-text-muted bg-white/5 border border-white/10">
+                No public code yet
+              </span>
             )}
           </div>
 

@@ -122,3 +122,12 @@ Per Phase 2, `measuredResults` is empty by default. To display defensible metric
   - Document test dataset, split, and sample size
   - Document hardware latency measurement technique (e.g. GPIO toggle + logic analyzer / DWT cycle counter)
 
+---
+
+## 6. Production Domain & Canonical URL (`src/data/profile.ts`, `index.html`, `public/sitemap.xml`, `public/robots.txt`)
+- The site canonical URL and metadata currently use `https://vinesh-portfolio.vercel.app/`.
+- If you have configured a custom domain on Vercel (e.g. `https://vineshshanmugam.me` or `https://vinzz.dev`):
+  - Update `SITE_URL` in `src/data/profile.ts`.
+  - Update canonical and OG URLs in `index.html`.
+  - Update URLs in `public/robots.txt` and `public/sitemap.xml`.
+

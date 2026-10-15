@@ -349,11 +349,13 @@ export default function ContactSection() {
               onChange={(e) => setInputVal(e.target.value)}
               placeholder="Type command ('help', 'projects', 'whoami', 'resume')..."
               className="flex-1 bg-transparent text-text-bright focus:outline-none text-xs font-mono placeholder:text-text-muted"
+              aria-label="Terminal command input"
             />
             <button
               type="submit"
               className="p-1.5 rounded bg-primary/20 text-primary hover:bg-primary hover:text-bg-primary transition-colors"
               title="Execute Command"
+              aria-label="Execute command"
             >
               <CornerDownLeft size={14} />
             </button>

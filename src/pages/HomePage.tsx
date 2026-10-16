@@ -50,13 +50,13 @@ export default function HomePage() {
         <div className="flex flex-wrap items-center gap-3 pt-2">
           <Link
             to="/projects"
-            className="inline-flex items-center justify-center px-4 py-2 rounded text-sm font-medium bg-accent text-white hover:bg-accent/90 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent min-h-[44px]"
+            className="btn-primary"
           >
             View projects
           </Link>
           <Link
             to="/contact"
-            className="inline-flex items-center justify-center px-4 py-2 rounded text-sm font-medium border border-border bg-transparent text-text hover:bg-surface transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent min-h-[44px]"
+            className="btn-secondary"
           >
             Contact
           </Link>
@@ -103,11 +103,11 @@ export default function HomePage() {
           {selectedProjects.map((project: Project) => (
             <article
               key={project.id}
-              className="flex flex-col justify-between p-5 rounded-lg border border-border bg-white dark:bg-[#0B0F14] hover:border-text-muted transition-colors duration-150"
+              className="card p-5 flex flex-col justify-between"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-medium px-2 py-0.5 rounded bg-surface text-text-muted border border-border">
+                  <span className="tag-pill text-xs">
                     {project.status}
                   </span>
                   {project.category && (
@@ -136,7 +136,7 @@ export default function HomePage() {
                   {project.technologies.slice(0, 4).map((tech) => (
                     <span
                       key={tech}
-                      className="text-xs px-2 py-0.5 rounded bg-surface text-text-muted font-mono"
+                      className="tag-pill text-xs"
                     >
                       {tech}
                     </span>

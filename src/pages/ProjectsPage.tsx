@@ -56,11 +56,11 @@ export default function ProjectsPage() {
         {filteredProjects.map((project: Project) => (
           <article
             key={project.id}
-            className="flex flex-col justify-between p-6 rounded-lg border border-border bg-white dark:bg-[#0B0F14] hover:border-text-muted transition-colors duration-150"
+            className="card p-6 flex flex-col justify-between"
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-medium px-2 py-0.5 rounded bg-surface text-text-muted border border-border">
+                <span className="tag-pill text-xs">
                   {project.status}
                 </span>
                 <span className="text-xs text-text-muted truncate">
@@ -87,7 +87,7 @@ export default function ProjectsPage() {
                 {project.technologies.map((tech) => (
                   <span
                     key={tech}
-                    className="text-xs px-2 py-0.5 rounded bg-surface text-text-muted font-mono"
+                    className="tag-pill text-xs"
                   >
                     {tech}
                   </span>

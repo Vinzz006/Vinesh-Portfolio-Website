@@ -55,10 +55,6 @@ export default function ProjectDetailPage() {
           {project.title}
         </h1>
 
-        <p className="text-lg text-text-muted leading-relaxed">
-          {project.description}
-        </p>
-
         {/* Healthcare Honesty Disclaimer */}
         {isHealthcare && (
           <div
@@ -70,7 +66,17 @@ export default function ProjectDetailPage() {
         )}
       </header>
 
-      {/* Overview & What I Built */}
+      {/* Overview */}
+      {project.description && (
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold text-text">Overview</h2>
+          <p className="text-base text-text leading-relaxed">
+            {project.description}
+          </p>
+        </section>
+      )}
+
+      {/* What I Built */}
       {project.longDescription && (
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-text">What I built</h2>

@@ -149,12 +149,12 @@ export default function HomePage() {
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-medium text-accent hover:underline"
+                      className="font-medium text-accent hover:underline py-2 inline-flex items-center min-h-[44px]"
                     >
                       Code
                     </a>
                   ) : (
-                    <span className="text-text-muted">No public code yet</span>
+                    <span className="text-text-muted py-2 inline-flex items-center min-h-[44px]">No public code yet</span>
                   )}
 
                   {project.liveUrl && (
@@ -162,7 +162,7 @@ export default function HomePage() {
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-medium text-accent hover:underline"
+                      className="font-medium text-accent hover:underline py-2 inline-flex items-center min-h-[44px]"
                     >
                       Demo
                     </a>
@@ -170,7 +170,7 @@ export default function HomePage() {
 
                   <Link
                     to={`/projects/${project.slug}`}
-                    className="ml-auto font-medium text-text hover:text-accent hover:underline"
+                    className="ml-auto font-medium text-text hover:text-accent hover:underline py-2 inline-flex items-center min-h-[44px]"
                   >
                     Case study →
                   </Link>

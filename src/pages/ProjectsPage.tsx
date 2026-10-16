@@ -40,7 +40,7 @@ export default function ProjectsPage() {
             key={cat}
             type="button"
             onClick={() => setSelectedCategory(cat)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors duration-150 min-h-[32px] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+            className={`px-3.5 py-2 rounded-full text-xs font-medium transition-colors duration-150 min-h-[44px] inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
               selectedCategory === cat
                 ? 'bg-accent text-white font-semibold'
                 : 'bg-surface text-text-muted hover:text-text border border-border'
@@ -100,12 +100,12 @@ export default function ProjectsPage() {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-accent hover:underline"
+                    className="font-medium text-accent hover:underline py-2 inline-flex items-center min-h-[44px]"
                   >
                     Code
                   </a>
                 ) : (
-                  <span className="text-text-muted">No public code yet</span>
+                  <span className="text-text-muted py-2 inline-flex items-center min-h-[44px]">No public code yet</span>
                 )}
 
                 {project.liveUrl && (
@@ -113,7 +113,7 @@ export default function ProjectsPage() {
                     href={project.liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-accent hover:underline"
+                    className="font-medium text-accent hover:underline py-2 inline-flex items-center min-h-[44px]"
                   >
                     Demo
                   </a>
@@ -121,7 +121,7 @@ export default function ProjectsPage() {
 
                 <Link
                   to={`/projects/${project.slug}`}
-                  className="ml-auto font-medium text-text hover:text-accent hover:underline"
+                  className="ml-auto font-medium text-text hover:text-accent hover:underline py-2 inline-flex items-center min-h-[44px]"
                 >
                   View case study →
                 </Link>

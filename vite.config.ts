@@ -8,4 +8,25 @@ export default defineConfig({
     port: 5173,
     host: true,
   },
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('/three/') || id.includes('\\three\\')) {
+            return 'vendor-three';
+          }
+          if (id.includes('@react-three')) {
+            return 'vendor-r3f';
+          }
+          if (id.includes('framer-motion')) {
+            return 'vendor-framer-motion';
+          }
+          if (id.includes('gsap')) {
+            return 'vendor-gsap';
+          }
+        },
+      },
+    },
+  },
 });

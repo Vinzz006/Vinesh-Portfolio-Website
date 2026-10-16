@@ -8,7 +8,6 @@ export interface ArchitectureNode {
 
 export interface Project {
   id: number;
-  slug: string;
   title: string;
   category: string;
   description: string;
@@ -28,14 +27,6 @@ export interface Project {
   highlight?: string;
 }
 
-export function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
 export function hasProjectEvidence(project: Project): boolean {
   return Boolean(
     project.githubUrl ||
@@ -50,7 +41,6 @@ export const projects: Project[] = [
   {
     id: 1,
     title: 'TinyML Human Activity & Fall Detection',
-    slug: 'tinyml-human-activity-and-fall-detection',
     category: 'Embedded AI / TinyML',
     description:
       'An ESP32-based intelligent motion monitoring system that collects accelerometer data and uses machine learning for human activity recognition and fall detection.',
@@ -128,7 +118,6 @@ export const projects: Project[] = [
   {
     id: 2,
     title: 'PancreaSense AI',
-    slug: 'pancreasense-ai',
     category: 'Healthcare AI + IoT',
     description:
       'A research prototype AI-powered healthcare platform combining sensor data, machine learning and a modern web dashboard for intelligent health-risk screening — not a medically validated diagnostic system.',
@@ -199,7 +188,6 @@ export const projects: Project[] = [
   {
     id: 3,
     title: 'SmartWatts',
-    slug: 'smartwatts',
     category: 'Smart Energy / IoT',
     description:
       'An intelligent electricity monitoring platform for real-time energy consumption monitoring, analytics, anomaly detection and actionable energy insights.',
@@ -270,7 +258,6 @@ export const projects: Project[] = [
   {
     id: 4,
     title: 'Transit Assist',
-    slug: 'transit-assist',
     category: 'AI + Computer Vision + Accessibility',
     description:
       'An intelligent transportation assistance concept using computer vision and real-time information to support navigation and accessibility for commuters.',
@@ -334,7 +321,6 @@ export const projects: Project[] = [
   {
     id: 5,
     title: 'DevOpsGuard',
-    slug: 'devopsguard',
     category: 'DevOps / Automation',
     description:
       'A DevOps-focused platform designed to help identify and manage problems across development and deployment workflows.',
@@ -398,7 +384,6 @@ export const projects: Project[] = [
   {
     id: 6,
     title: 'AI Medical Report & Prescription Analyzer',
-    slug: 'ai-medical-report-and-prescription-analyzer',
     category: 'Healthcare AI',
     description:
       'An AI-assisted tool for analyzing medical reports and prescriptions using NLP and machine learning — a research prototype, not a medical device.',
@@ -462,7 +447,6 @@ export const projects: Project[] = [
   {
     id: 7,
     title: 'AI Farmer Query & Advisory System',
-    slug: 'ai-farmer-query-and-advisory-system',
     category: 'AI + Agriculture',
     description:
       'An AI-powered advisory system for farmers that answers agricultural queries and provides recommendations using NLP.',
@@ -526,7 +510,6 @@ export const projects: Project[] = [
   {
     id: 8,
     title: 'Medical Image Processing',
-    slug: 'medical-image-processing',
     category: 'Computer Vision / Medical AI',
     description:
       'A suite of computer vision projects including brain tumor segmentation and chest X-ray classification using deep learning.',
@@ -590,7 +573,6 @@ export const projects: Project[] = [
   {
     id: 9,
     title: 'RailDesk AI',
-    slug: 'raildesk-ai',
     category: 'AI + Full-Stack / Railway SaaS',
     description:
       'A railway-focused helpdesk and ticketing platform with AI assistance, designed to streamline railway customer support workflows.',
@@ -654,7 +636,6 @@ export const projects: Project[] = [
   {
     id: 10,
     title: 'ESP32 + Firebase Real-Time IoT Dashboard',
-    slug: 'esp32-firebase-real-time-iot-dashboard',
     category: 'IoT + Cloud',
     description:
       'A real-time IoT monitoring dashboard integrating ESP32 microcontroller sensor data with Firebase for live data visualization.',

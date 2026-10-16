@@ -2,61 +2,82 @@
 
 > **ECE Student · Embedded AI & IoT** · Also builds full-stack dashboards.
 
-Live Site: [https://vinesh-portfolio-website.vercel.app/](https://vinesh-portfolio-website.vercel.app/)  
-Repository: [https://github.com/Vinzz006/Vinesh-Portfolio-Website](https://github.com/Vinzz006/Vinesh-Portfolio-Website)
+- **Live URL**: [https://vinesh-portfolio-website.vercel.app/](https://vinesh-portfolio-website.vercel.app/)
+- **Repository**: [https://github.com/Vinzz006/Vinesh-Portfolio-Website](https://github.com/Vinzz006/Vinesh-Portfolio-Website)
 
 ---
 
 ## Overview
 
-This repository powers the personal engineering portfolio of **Vinesh Shanmugam** (Electronics and Communication Engineering student, 2024–2028, Meenakshi Sundararajan Engineering College).
+A clean, calm, multi-page portfolio designed for recruiters and engineering managers to scan technical competence in under 30 seconds.
 
-The site showcases end-to-end engineering projects connecting physical sensors, embedded microcontrollers (ESP32), on-device TinyML inference, communication telemetry (MQTT/HTTP), and full-stack web applications.
-
----
-
-## Screenshots
-
-<!-- TODO_USER: Replace placeholder image links with actual screenshots captured at 1440px desktop viewport -->
-| View | Preview Placeholder |
-| :--- | :--- |
-| **Hero & Architecture Preview** | `![Hero Preview](docs/screenshots/hero_preview.png)` *(TODO_USER: Capture 1440px hero)* |
-| **Projects Archive & Evidence** | `![Projects Grid](docs/screenshots/projects_grid.png)` *(TODO_USER: Capture projects grid)* |
-| **Interactive Engineering Lab** | `![Lab Dataflow](docs/screenshots/engineering_lab.png)` *(TODO_USER: Capture lab dataflow)* |
+Built with a content-first philosophy: zero fabricated claims, zero pseudo-telemetry or 3D gimmicks, WCAG AA contrast compliance, pre-rendered static routes for crawlers, and an initial JS bundle under 90 kB gzip.
 
 ---
 
-## Honest Project & Evidence Status
+## Screenshot Placeholders
 
-To maintain transparent engineering integrity, this portfolio features a real-time proof counter and evidence badge system:
-
-- **Verified Proof Counter**: Explicitly displays how many projects have public code repositories, live links, or video demonstrations.
-- **Honesty Badges**: Projects without active public repositories display a clear, muted `No public code yet` badge rather than fabricated claims or mock links.
-- **Evidence-First Ordering**: Projects with verifiable public code or live demos are automatically sorted first.
-
-For tracking code links, demo videos, and metrics that need user updates, see [docs/USER_INPUTS_NEEDED.md](docs/USER_INPUTS_NEEDED.md) and [docs/CLAIMS_TO_VERIFY.md](docs/CLAIMS_TO_VERIFY.md).
+| Page / Route | Viewport | Screenshot Placeholder |
+| :--- | :--- | :--- |
+| **Home (`/`)** | Desktop (1440px) | `![Home Page](docs/screenshots/home_desktop.png)` *(TODO_USER: Capture 1440px)* |
+| **Projects Archive (`/projects`)** | Desktop (1440px) | `![Projects List](docs/screenshots/projects_desktop.png)` *(TODO_USER: Capture 1440px)* |
+| **Case Study (`/projects/:slug`)** | Desktop (1440px) | `![Project Case Study](docs/screenshots/casestudy_desktop.png)` *(TODO_USER: Capture 1440px)* |
+| **Mobile Home (`/`)** | Mobile (375px) | `![Mobile Home](docs/screenshots/home_mobile.png)` *(TODO_USER: Capture 375px)* |
 
 ---
 
 ## Tech Stack
 
-- **Core Framework**: React 19, TypeScript
-- **Bundler & Build Tool**: Vite 8 (Rolldown engine)
-- **Styling**: Tailwind CSS, CSS Grid, Vanilla Glassmorphism
-- **Graphics & 3D**: Three.js, `@react-three/fiber`, `@react-three/drei` (code-split, on-demand loaded)
-- **Motion & Micro-interactions**: Framer Motion, GSAP (ScrollTrigger), Anime.js
-- **Scroll Management**: Lenis Smooth Scroll (disabled automatically in low-power/touch mode)
-- **Icons**: Lucide React
-- **Hosting & Deployment**: Vercel
+- **Framework**: React 19, TypeScript
+- **Routing**: React Router DOM v7 (Multi-page SPA with prerendered static routes)
+- **Styling**: Tailwind CSS v3, Vanilla CSS custom properties (`index.css`)
+- **Typography**: Inter (400, 500, 600, 700)
+- **Icons**: Custom standalone accessible SVGs (`src/components/Icons.tsx`)
+- **Build & Prerender Tooling**: Vite 8, Node.js static route prerenderer (`scripts/prerender.cjs`), Sharp (`scripts/generate_og_image.cjs`), pdf-lib (`scripts/generate_resume.cjs`)
+- **Testing**: Playwright (automated viewport tests at 375, 768, and 1440px), WCAG 2.1 programmatic contrast checker (`scripts/verify_contrast.cjs`)
+- **Deployment**: Vercel (`vercel.json` SPA catch-all rewrites)
 
 ---
 
-## Architecture & Performance Highlights
+## Project Structure
 
-- **Dynamic Code-Splitting**: All 3D WebGL scenes (`HeroTechnologicalCore`, `Skills3DUniverse`, `About3DDecorations`, `Vinzz3DScene`, `Cinematic3DIntro`) are code-split using `React.lazy` and `Suspense`.
-- **Vendor Chunking**: Separate vendor chunks for `vendor-r3f`, `vendor-three`, `vendor-framer-motion`, and `vendor-gsap`.
-- **Low-Power & Reduced Motion Detection**: Shared `useLowPower` hook detects `prefers-reduced-motion`, touch screens (`pointer: coarse`), low CPU cores ($\le 4$), low device memory ($\le 4$ GB), and data saver mode. Heavy canvas animations, 3D scenes, particles, and smooth scroll are bypassed automatically.
-- **SEO & Social Sharing**: Pre-rendered static fallback inside `<div id="root">`, Open Graph card generator (`scripts/generate_og_image.cjs`), JSON-LD Person schema, `robots.txt`, and `sitemap.xml`.
+```
+├── dist/                      # Production build output with prerendered static HTML routes
+├── docs/                      # Verification and user inputs needed
+│   ├── USER_INPUTS_NEEDED.md  # Comprehensive TODO_USER checklist for links, dates, & metrics
+│   └── screenshots/           # Screenshot placeholders
+├── public/                    # Static assets (favicons, og-image.png, robots.txt, sitemap.xml, resume.pdf)
+├── scripts/                   # Build-time and QA scripts
+│   ├── generate_og_image.cjs  # Sharp 1200x630 social card generator (light design)
+│   ├── generate_resume.cjs    # PDF resume builder
+│   ├── prerender.cjs          # Static HTML prerenderer for all 15 routes
+│   ├── test_responsive.cjs    # Playwright responsiveness and tap target test suite
+│   └── verify_contrast.cjs    # Programmatic WCAG AA contrast ratio verification
+├── src/
+│   ├── assets/                # Profile photography (vinesh_portrait.webp)
+│   ├── components/            # Layout, Header, Footer, Icons, ScrollToTop
+│   ├── data/                  # Content data layer (Source of Truth)
+│   │   ├── experience.ts      # Work history, timeline, and education
+│   │   ├── profile.ts         # Name, titles, and site URL constants
+│   │   ├── projects.ts        # Project catalog with slugs and architecture data
+│   │   └── skills.ts          # Grouped skills with project verification helper
+│   ├── hooks/                 # useDocumentMeta hook
+│   ├── pages/                 # Multi-page route components
+│   │   ├── HomePage.tsx       # / (Hero, Currently, 3 Selected Projects)
+│   │   ├── ProjectsPage.tsx   # /projects (2-column grid, category chips, evidence badges)
+│   │   ├── ProjectDetailPage.tsx # /projects/:slug (Case study with architecture & disclaimers)
+│   │   ├── AboutPage.tsx      # /about (Bio, skills by domain, education)
+│   │   ├── ExperiencePage.tsx # /experience (Work history vertical list)
+│   │   ├── ContactPage.tsx    # /contact (Email, LinkedIn, GitHub, Resume)
+│   │   └── NotFoundPage.tsx   # 404 handler
+│   ├── App.tsx                # Route definitions
+│   ├── index.css              # Design tokens and base styles
+│   └── main.tsx               # Client entry point
+├── index.html                 # Shell HTML with meta tags, JSON-LD, and static fallback
+├── tailwind.config.js         # Design tokens, restrained color palette, and font scale
+├── vercel.json                # Vercel SPA rewrite configuration
+└── vite.config.ts             # Vite configuration
+```
 
 ---
 
@@ -68,77 +89,96 @@ For tracking code links, demo videos, and metrics that need user updates, see [d
 
 ### Installation
 ```bash
-# Clone repository
 git clone https://github.com/Vinzz006/Vinesh-Portfolio-Website.git
 cd Vinesh-Portfolio-Website
-
-# Install dependencies
 npm install
 ```
 
 ### Development
 ```bash
-# Start local development server with HMR
 npm run dev
 ```
 
-### Production Build
+### Production Build & Static Prerendering
 ```bash
-# Compile TypeScript and bundle production assets
 npm run build
+```
+This runs TypeScript checking, Vite bundling, and the static HTML prerenderer across all routes (`/`, `/projects`, `/projects/:slug`, `/about`, `/experience`, `/contact`).
 
-# Preview production bundle locally
+### Local Preview
+```bash
 npm run preview
 ```
 
-### Utility Scripts
+### Verification & Testing Scripts
 ```bash
-# Generate vector resume PDF
+# Verify WCAG AA color contrast programmatically
+node scripts/verify_contrast.cjs
+
+# Run automated responsiveness & tap target tests across 375px, 768px, and 1440px
+node scripts/test_responsive.cjs
+
+# Regenerate resume PDF
 node scripts/generate_resume.cjs
 
-# Generate 1200x630 Open Graph social share image
+# Regenerate social share card (1200x630 PNG)
 node scripts/generate_og_image.cjs
 ```
 
 ---
 
-## Folder Structure
+## How to Add or Edit a Project
 
-```
-├── docs/                      # Verification and consistency documentation
-│   ├── CLAIMS_TO_VERIFY.md    # Checklist of specific technical claims
-│   ├── CONSISTENCY_REPORT.md  # Site vs. Resume alignment report
-│   ├── USER_INPUTS_NEEDED.md  # TODO_USER tracking for links & metrics
-│   └── screenshots/           # Screenshot demonstration assets
-├── public/                    # Static public assets (favicons, og-image, robots, sitemap, resume)
-├── scripts/                   # Build-time utility generation scripts
-│   ├── generate_og_image.cjs  # Sharp/SVG social card generator
-│   └── generate_resume.cjs    # PDF resume builder
-├── src/
-│   ├── animations/            # Anime.js and GSAP animation sequences
-│   ├── assets/                # Optimized WebP imagery
-│   ├── components/            # Reusable UI, motion, and 3D components
-│   │   ├── 3d/                # Three.js / R3F scenes (lazy-loaded)
-│   │   ├── intro/             # Cinematic introduction sequence
-│   │   ├── motion/            # Magnetic buttons, scroll triggers, tilt cards
-│   │   ├── three/             # Background particle clouds and canvases
-│   │   └── ui/                # Bento grids, spotlights, number tickers
-│   ├── data/                  # Single-source-of-truth project, skill, and profile data
-│   │   ├── experience.ts      # Education and timeline entries
-│   │   ├── metrics.ts         # Verified hardware measurement metrics
-│   │   ├── profile.ts         # Global hero titles, subtitles, and URLs
-│   │   ├── projects.ts        # 10 engineering project architectures
-│   │   └── skills.ts          # Categorized technical capabilities
-│   ├── hooks/                 # Custom React hooks (useReducedMotion, useLowPower, useGitHub)
-│   ├── lib/                   # Utility helpers and GitHub API client
-│   └── sections/              # Page sections (Hero, About, Projects, Lab, Skills, Contact)
-├── index.html                 # HTML shell with meta tags and crawler fallback
-├── tailwind.config.js         # Design tokens, palette, and typography
-└── vite.config.ts             # Vite configuration with vendor manualChunks
-```
+All project content is statically typed and declared in [`src/data/projects.ts`](src/data/projects.ts). To add a new project:
+
+1. Open `src/data/projects.ts`.
+2. Add a new object to the `projects` array:
+   ```ts
+   {
+     id: 11,
+     title: 'Your Project Title',
+     slug: 'your-project-title', // lowercase, hyphenated URL slug
+     category: 'Embedded AI / IoT',
+     description: 'A 1-2 sentence plain-language summary for card previews.',
+     longDescription: 'Detailed explanation of what you built for the case study.',
+     technologies: ['ESP32', 'Python', 'FastAPI'],
+     architecture: ['Sensors', 'ESP32', 'Cloud', 'Frontend'],
+     architectureDetails: [
+       {
+         name: 'Sensors',
+         role: 'Data Acquisition',
+         tech: 'I2C / GPIO',
+         type: 'sensor',
+         description: 'Collects physical measurements at 50Hz.'
+       }
+     ],
+     status: 'In Progress', // 'Active' | 'In Progress' | 'Research' | 'Complete'
+     githubUrl: 'https://github.com/Vinzz006/your-repo', // or null if private/unreleased
+     liveUrl: null, // or live deployment URL
+     demoVideoUrl: null,
+     featured: false, // set true to feature on the homepage
+   }
+   ```
+3. Run `npm run build`. The build script will automatically:
+   - Validate TypeScript types.
+   - Generate static pre-rendered HTML for `/projects/your-project-title`.
+   - Update the site index.
+4. Add the new slug to `public/sitemap.xml`.
+
+---
+
+## Deployment (Vercel)
+
+The site is configured for zero-configuration continuous deployment on Vercel:
+
+1. Connect your GitHub repository to [Vercel](https://vercel.com).
+2. Framework Preset: **Vite**.
+3. Build Command: `npm run build`.
+4. Output Directory: `dist`.
+5. Rewrites: Handled via `vercel.json` so deep links and client routing work seamlessly with fallback to `index.html`.
 
 ---
 
 ## License
 
-This project is open-sourced under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).

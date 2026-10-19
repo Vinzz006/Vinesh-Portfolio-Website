@@ -1,256 +1,314 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
-import { Menu, X, FileText } from 'lucide-react';
-import { GithubIcon, LinkedinIcon } from './Icons';
-import { cn } from '../lib/utils';
+import { useEffect, useState } from 'react';
+import { Menu, X, FileText, ExternalLink, Terminal } from 'lucide-react';
 import ResumeModal from './ResumeModal';
-import MagneticButton from './motion/MagneticButton';
-import { HERO_TITLE } from '../data/profile';
+import { STATUS_PANEL, CONTACT_LINKS } from '../data/content';
 
-const navLinks = [
-  { href: '#home', label: 'Home' },
-  { href: '#about', label: 'About' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#lab', label: 'Engineering Lab' },
-  { href: '#skills', label: 'Skills' },
-  { href: '#research', label: 'Research' },
-  { href: '#experience', label: 'Experience' },
-  { href: '#contact', label: 'Contact' },
+interface NavItem {
+  num: string;
+  label: string;
+  href: string;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { num: '01', label: 'About', href: '#about' },
+  { num: '02', label: 'Projects', href: '#projects' },
+  { num: '03', label: 'Skills', href: '#skills' },
+  { num: '04', label: 'Contact', href: '#contact' },
 ];
 
 export default function Navigation() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [resumeOpen, setResumeOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [activeSection, setActiveSection] = useState<string>('home');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [resumeOpen, setResumeOpen] = useState<boolean>(false);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
 
-  // Framer Motion Scroll Progress for the header line indicator
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
+  // Scroll-spy active section detection
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 30);
+    const sectionIds = ['contact', 'skills', 'lab', 'projects', 'about', 'home'];
 
-      // Active section detection
-      const sections = navLinks.map((l) => l.href.slice(1));
-      for (const id of [...sections].reverse()) {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 200;
+
+      for (const id of sectionIds) {
         const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top <= 140) {
-          setActiveSection(id);
-          return;
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(id);
+            return;
+          }
         }
       }
-      setActiveSection('home');
+
+      if (window.scrollY < 150) {
+        setActiveSection('home');
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on outside click
+  // Lock body scroll and register Escape key when mobile menu is open
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMobileOpen(false);
-      }
-    };
-    if (mobileOpen) document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [mobileOpen]);
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') setMobileMenuOpen(false);
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [mobileMenuOpen]);
 
   const handleNavClick = (href: string) => {
-    setMobileOpen(false);
-    const target = document.querySelector(href);
-    if (target) target.scrollIntoView({ behavior: 'smooth' });
+    setMobileMenuOpen(false);
+    const targetId = href.startsWith('#') ? href.slice(1) : href;
+    window.dispatchEvent(new CustomEvent('load-lazy-section', { detail: 'all' }));
+
+    const scrollTarget = () => {
+      const target = document.getElementById(targetId);
+      if (target) {
+        const headerHeight = 48;
+        const targetRect = target.getBoundingClientRect();
+        const targetTop = targetRect.top + window.scrollY - headerHeight;
+        window.scrollTo({
+          top: targetTop,
+          behavior: 'smooth',
+        });
+      }
+    };
+
+    scrollTarget();
+    requestAnimationFrame(() => {
+      setTimeout(scrollTarget, 40);
+      setTimeout(scrollTarget, 150);
+      setTimeout(scrollTarget, 350);
+    });
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartY(e.touches[0].clientY);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartY !== null) {
+      const deltaY = e.changedTouches[0].clientY - touchStartY;
+      // Swipe down > 50px dismisses the menu
+      if (deltaY > 50) {
+        setMobileMenuOpen(false);
+      }
+    }
+    setTouchStartY(null);
   };
 
   return (
     <>
       <header
         role="banner"
-        className={cn(
-          'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
-          scrolled
-            ? 'py-3 bg-[#050505]/85 backdrop-blur-2xl border-b border-white/[0.12] shadow-[0_4px_30px_rgba(0,0,0,0.8)]'
-            : 'py-5 bg-transparent border-b border-white/[0.06]'
-        )}
+        className="sticky top-0 left-0 right-0 z-40 bg-[#060806]/95 backdrop-blur-md border-b border-console-border font-mono text-xs select-none"
       >
-        <nav
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between"
-          aria-label="Main navigation"
-        >
-          {/* Logo */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
+          {/* Left Brand Identifier */}
           <a
             href="#home"
-            onClick={(e) => { e.preventDefault(); handleNavClick('#home'); }}
-            className="flex flex-col group"
-            aria-label="Vinesh Shanmugam - Home"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('#home');
+            }}
+            className="flex items-center gap-2.5 text-term-bright hover:text-phosphor transition-colors group py-1.5"
+            aria-label="Vinesh Shanmugam - Hardware Console Home"
           >
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-accent-green shadow-[0_0_8px_#10B981] animate-pulse" />
-              <span className="font-bold text-text-bright text-base leading-none group-hover:text-primary transition-colors duration-200">
-                Vinesh Shanmugam
-              </span>
-            </div>
-            <span className="font-mono text-[9px] text-text-muted tracking-widest mt-1 ml-4 uppercase">
-              {HERO_TITLE}
+            <span className="led-phosphor" />
+            <span className="font-bold tracking-wider uppercase text-sm sm:text-base">
+              VINESH SHANMUGAM
+            </span>
+            <span className="hidden md:inline-block text-[10px] text-term-muted border border-console-border px-1.5 py-0.2 bg-[#0B0E0B]">
+              [240MHz · SYS_OK]
             </span>
           </a>
 
-          {/* Desktop Nav Links with active sliding indicator */}
-          <ul className="hidden lg:flex items-center gap-6" role="list">
-            {navLinks.map(({ href, label }) => {
-              const isActive = activeSection === href.slice(1);
-              return (
-                <li key={href} className="relative">
-                  <button
-                    onClick={() => handleNavClick(href)}
-                    className={cn(
-                      'text-sm font-medium transition-colors duration-200 py-1',
-                      isActive ? 'text-primary font-semibold' : 'text-text-secondary hover:text-text-primary'
-                    )}
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    {label}
-                  </button>
+          {/* Desktop Minimal Section Number Links (01 About, 02 Projects, 03 Skills, 04 Contact) */}
+          <nav className="hidden md:flex items-center gap-1" aria-label="Workbench sections">
+            {NAV_ITEMS.map(({ num, label, href }) => {
+              const targetId = href.slice(1);
+              const isActive = activeSection === targetId;
 
-                  {/* Smooth Framer Motion Active Indicator */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeNavIndicator"
-                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-primary rounded-full shadow-[0_0_8px_#00D4FF]"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </li>
+              return (
+                <button
+                  key={href}
+                  onClick={() => handleNavClick(href)}
+                  className={`px-3 py-1.5 min-h-[36px] flex items-center gap-1.5 transition-all text-xs border ${
+                    isActive
+                      ? 'border-phosphor/70 bg-phosphor/15 text-phosphor font-bold shadow-[0_0_10px_rgba(57,255,136,0.2)]'
+                      : 'border-transparent text-term-muted hover:border-console-border hover:text-term-bright hover:bg-console-panel'
+                  }`}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  <span className={isActive ? 'text-phosphor' : 'text-term-dim'}>
+                    {num}
+                  </span>
+                  <span>{label}</span>
+                </button>
               );
             })}
-          </ul>
 
-          {/* Desktop Right */}
-          <div className="hidden lg:flex items-center gap-3">
-            <a
-              href="https://github.com/Vinzz006"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-outline text-xs"
-              aria-label="GitHub profile"
-            >
-              <GithubIcon size={14} />
-              GitHub
-            </a>
-            <a
-              href="https://www.linkedin.com/in/vinesh-shanmugam-109215363"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-outline text-xs"
-              aria-label="LinkedIn profile"
-            >
-              <LinkedinIcon size={14} />
-              LinkedIn
-            </a>
-            <MagneticButton strength={0.2}>
+            {/* Quick Resume PDF Command Button */}
+            <div className="ml-3 pl-3 border-l border-console-border flex items-center gap-2">
               <button
                 onClick={() => setResumeOpen(true)}
-                className="btn-primary text-xs py-2 shadow-glow-sm flex items-center gap-1.5"
-                aria-label="View Resume PDF"
+                className="console-btn text-[11px] py-1.5 px-3 min-h-[36px] flex items-center gap-1.5"
+                title="Open Resume Document"
               >
-                <FileText size={14} />
-                Resume
+                <FileText size={12} />
+                <span>$ resume</span>
               </button>
-            </MagneticButton>
+            </div>
+          </nav>
+
+          {/* Mobile Terminal Menu Trigger (>= 44x44px touch target) */}
+          <div className="flex items-center gap-2 md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="min-w-[44px] min-h-[44px] p-2 border border-console-border text-phosphor bg-console-panel flex items-center justify-center gap-1.5 text-xs font-bold"
+              aria-label="Open terminal navigation menu"
+            >
+              <Terminal size={15} />
+              <span>MENU</span>
+            </button>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden p-2 rounded-lg border border-border-subtle text-text-secondary hover:text-primary hover:border-primary/40 transition-colors"
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={mobileOpen}
-          >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </nav>
-
-        {/* ─── Scroll Progress Line Indicator on Header Bottom Border ─── */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-border-subtle/30 overflow-hidden pointer-events-none"
-          aria-hidden="true"
-        >
-          <motion.div
-            className="h-full bg-gradient-to-r from-primary via-[#38BDF8] to-secondary shadow-[0_0_12px_#00D4FF]"
-            style={{
-              scaleX,
-              transformOrigin: '0%',
-            }}
-          />
         </div>
-
-        {/* Mobile Menu */}
-        {mobileOpen && (
-          <div
-            ref={menuRef}
-            className="lg:hidden absolute top-full left-0 right-0 bg-bg-primary/98 backdrop-blur-xl border-b border-border-subtle shadow-xl"
-            role="dialog"
-            aria-label="Mobile navigation"
-          >
-            <ul className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1" role="list">
-              {navLinks.map(({ href, label }) => (
-                <li key={href}>
-                  <button
-                    onClick={() => handleNavClick(href)}
-                    className={cn(
-                      'w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200',
-                      activeSection === href.slice(1)
-                        ? 'text-primary bg-primary/5 border border-primary/20 font-semibold'
-                        : 'text-text-secondary hover:text-text-primary hover:bg-bg-secondary'
-                    )}
-                  >
-                    {label}
-                  </button>
-                </li>
-              ))}
-              <li className="pt-2 border-t border-border-subtle flex flex-col gap-2">
-                <button
-                  onClick={() => {
-                    setMobileOpen(false);
-                    setResumeOpen(true);
-                  }}
-                  className="btn-primary text-xs w-full justify-center py-2.5"
-                >
-                  <FileText size={14} /> View & Download Resume PDF
-                </button>
-                <div className="flex gap-2">
-                  <a
-                    href="https://github.com/Vinzz006"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-ghost text-xs flex-1 justify-center"
-                  >
-                    <GithubIcon size={14} /> GitHub
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/vinesh-shanmugam-109215363"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-ghost text-xs flex-1 justify-center"
-                  >
-                    <LinkedinIcon size={14} /> LinkedIn
-                  </a>
-                </div>
-              </li>
-            </ul>
-          </div>
-        )}
       </header>
 
-      {/* Interactive Resume Modal */}
+      {/* Full-Screen Mobile Terminal-Style Navigation Menu (h-[100dvh] + touch swipe dismiss + Esc) */}
+      {mobileMenuOpen && (
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="fixed inset-0 h-[100dvh] z-50 bg-[#060806]/98 font-mono text-term-text p-6 flex flex-col justify-between overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Terminal Navigation Menu"
+        >
+          {/* Graticule pattern */}
+          <div className="absolute inset-0 graticule-grid opacity-30 pointer-events-none" />
+
+          {/* Terminal Menu Header Bar */}
+          <div className="relative z-10 border-b border-console-border pb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="led-phosphor animate-pulse" />
+              <span className="text-phosphor font-bold text-xs uppercase tracking-widest">
+                DEBUG_DISPATCH // TERMINAL MENU
+              </span>
+            </div>
+            {/* Close Button with >= 44x44px touch target */}
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="min-w-[44px] min-h-[44px] px-3 py-2 border border-console-border text-term-muted hover:text-phosphor hover:border-phosphor text-xs flex items-center justify-center font-bold"
+              aria-label="Close menu"
+            >
+              [X] ESC
+            </button>
+          </div>
+
+          {/* Menu Commands Body */}
+          <div className="relative z-10 my-auto py-6 space-y-4">
+            <div className="text-term-dim text-[11px] mb-2 flex items-center justify-between">
+              <span>&gt; SELECT BENCH SUBSYSTEM [1-4] OR EXECUTE COMMAND:</span>
+              <span className="text-phosphor text-[10px]">SWIPE DOWN TO CLOSE</span>
+            </div>
+
+            <div className="space-y-2.5">
+              {NAV_ITEMS.map(({ num, label, href }) => {
+                const targetId = href.slice(1);
+                const isActive = activeSection === targetId;
+
+                return (
+                  <button
+                    key={href}
+                    onClick={() => handleNavClick(href)}
+                    className={`w-full text-left p-3.5 min-h-[48px] border flex items-center justify-between transition-all ${
+                      isActive
+                        ? 'border-phosphor bg-phosphor/15 text-phosphor font-bold'
+                        : 'border-console-border bg-[#0B0E0B] text-term-text hover:border-phosphor/50 hover:text-phosphor'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-phosphor font-bold">{num}</span>
+                      <span className="text-sm tracking-wider uppercase font-semibold">
+                        $ cd /{label.toLowerCase()}
+                      </span>
+                    </div>
+                    <span className="text-xs text-term-dim">
+                      [{label.toUpperCase()}]
+                    </span>
+                  </button>
+                );
+              })}
+
+              {/* Engineering Lab quick link */}
+              <button
+                onClick={() => handleNavClick('#lab')}
+                className="w-full text-left p-3.5 min-h-[48px] border border-console-border bg-[#0B0E0B] text-term-text hover:border-phosphor/50 hover:text-phosphor flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-amber font-bold">LAB</span>
+                  <span className="text-sm tracking-wider uppercase font-semibold">
+                    $ cd /engineering-lab
+                  </span>
+                </div>
+                <span className="text-xs text-term-dim">[LIVE PIPELINE]</span>
+              </button>
+            </div>
+
+            {/* Quick Action Commands */}
+            <div className="pt-4 border-t border-console-border space-y-2.5">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setResumeOpen(true);
+                }}
+                className="w-full text-left p-3 min-h-[48px] border border-phosphor/40 bg-phosphor/10 text-phosphor text-xs flex items-center justify-between font-bold"
+              >
+                <span>$ open resume.pdf</span>
+                <span className="text-[10px]">[PDF VIEWER]</span>
+              </button>
+
+              <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+                <a
+                  href={CONTACT_LINKS.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="min-h-[44px] p-2.5 border border-console-border flex items-center justify-center text-term-muted hover:text-phosphor hover:border-phosphor"
+                >
+                  $ git remote
+                </a>
+                <a
+                  href={`mailto:${CONTACT_LINKS.email}`}
+                  className="min-h-[44px] p-2.5 border border-console-border flex items-center justify-center text-term-muted hover:text-phosphor hover:border-phosphor"
+                >
+                  $ mailto:vinesh
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Terminal Menu Footer */}
+          <div className="relative z-10 border-t border-console-border pt-3 flex items-center justify-between text-[10px] text-term-dim">
+            <span>LOC: {STATUS_PANEL.location}</span>
+            <span className="text-phosphor">{STATUS_PANEL.status.toUpperCase()}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Official Resume PDF Modal */}
       <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
     </>
   );

@@ -1,361 +1,240 @@
-import { useEffect, useRef, useState, lazy, Suspense } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Mail, ChevronDown, FileText, Cpu, Activity, Radio, Sparkles } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowRight, FileText, Mail, Terminal, RotateCcw } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
-import { animateHeroOpening } from '../animations/anime-utils';
-import { calculateParallax } from '../animations/heroAnimations';
-import { useReducedMotion, useLowPower } from '../hooks/useReducedMotion';
-import vineshPortrait from '../assets/vinesh_portrait.webp';
 import ResumeModal from '../components/ResumeModal';
-import { Spotlight } from '../components/ui/Spotlight';
-import { Meteors } from '../components/ui/Meteors';
-import { Marquee } from '../components/ui/Marquee';
-import { BorderBeam } from '../components/ui/BorderBeam';
-import MagneticButton from '../components/motion/MagneticButton';
-import { HERO_TITLE, HERO_SUBTITLE } from '../data/profile';
-
-const HeroTechnologicalCore = lazy(() => import('../components/3d/HeroTechnologicalCore'));
-
-const techBadges = [
-  'ESP32 Microcontroller',
-  'TinyML Edge AI',
-  'TensorFlow',
-  'PyTorch',
-  'FastAPI Python',
-  'React 19 & TypeScript',
-  'Firebase Real-time DB',
-  'PostgreSQL & SQLAlchemy',
-  'FreeRTOS Multitasking',
-  'OpenCV Computer Vision',
-  'SHAP Model Explainability',
-  'MQTT Telemetry Protocol',
-];
+import BootSequenceIntro from '../components/BootSequenceIntro';
+import MicrocontrollerWorkbench from '../components/MicrocontrollerWorkbench';
+import { OWNER_NAME, HERO_TITLE, STATUS_PANEL, CONTACT_LINKS } from '../data/profile';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 
 export default function HeroSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const lowPower = useLowPower();
   const [resumeOpen, setResumeOpen] = useState(false);
-  const [parallaxPos, setParallaxPos] = useState({ x: 0, y: 0, rotateX: 0, rotateY: 0 });
+  const [showBootIntro, setShowBootIntro] = useState(() => {
+    try {
+      if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return false;
+      }
+      return !sessionStorage.getItem('vinesh_boot_seq_seen');
+    } catch {
+      return false;
+    }
+  });
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const timer = setTimeout(() => {
-      animateHeroOpening('#hero-content', reduced);
-    }, 80);
-    return () => clearTimeout(timer);
-  }, [reduced]);
+  const fullRole = HERO_TITLE; // "ECE Student · Embedded AI & IoT"
+  const typedRole = fullRole;
 
-  // Damping Mouse Parallax
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (reduced || lowPower) return;
-    const { x, y, rotateX, rotateY } = calculateParallax(
-      e.clientX,
-      e.clientY,
-      window.innerWidth,
-      window.innerHeight,
-      0.5
-    );
-    setParallaxPos({ x, y, rotateX, rotateY });
-  };
-
-  const handleMouseLeave = () => {
-    setParallaxPos({ x: 0, y: 0, rotateX: 0, rotateY: 0 });
-  };
-
-  const handleScroll = () => {
-    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+  const handleRerunBoot = () => {
+    try {
+      sessionStorage.removeItem('vinesh_boot_seq_seen');
+    } catch {
+      // ignore
+    }
+    setShowBootIntro(true);
   };
 
   return (
-    <section
-      id="home"
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="hero-section min-h-screen flex flex-col justify-center relative overflow-hidden pt-24 pb-12"
-      aria-labelledby="hero-heading"
-    >
-      {/* Central Interactive 3D Technological Core (R3F & Three.js) - Skipped in lowPower */}
-      {!lowPower && (
-        <Suspense fallback={<div className="absolute inset-0 bg-transparent pointer-events-none" />}>
-          <HeroTechnologicalCore mouseX={parallaxPos.x * 0.04} mouseY={parallaxPos.y * 0.04} />
-        </Suspense>
+    <>
+      {/* 1.5s Boot-Sequence Intro (Shown once per session, skippable) */}
+      {showBootIntro && (
+        <BootSequenceIntro onComplete={() => setShowBootIntro(false)} />
       )}
 
-      {/* 1. Spotlight Glow Accent */}
-      <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="#00D4FF" />
+      <section
+        id="home"
+        className="relative pt-8 pb-16 md:pt-12 md:pb-24 overflow-hidden font-mono border-b border-console-border bg-[#060806]"
+        aria-labelledby="hero-heading"
+      >
+        {/* Oscilloscope Background Graticule */}
+        <div className="absolute inset-0 graticule-grid opacity-25 pointer-events-none" aria-hidden="true" />
 
-      {/* 2. Micro Meteors Atmospheric Field - Skipped in lowPower */}
-      {!lowPower && <Meteors number={12} />}
-
-      {/* 3. Subtle Cybernetic Grid */}
-      <div
-        className="hero-grid absolute inset-0 grid-bg opacity-20 pointer-events-none transition-transform duration-700 ease-out"
-        style={{
-          transform: `translate3d(${parallaxPos.x * 0.3}px, ${parallaxPos.y * 0.3}px, 0)`,
-        }}
-        aria-hidden="true"
-      />
-
-      {/* 4. Volumetric Ambient Radiance */}
-      <div
-        className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] rounded-full pointer-events-none opacity-40 blur-3xl transition-transform duration-700 ease-out"
-        style={{
-          background:
-            'radial-gradient(ellipse at center, rgba(0, 212, 255, 0.15) 0%, rgba(124, 58, 237, 0.10) 45%, transparent 75%)',
-          transform: `translate3d(${parallaxPos.x * 0.6}px, ${parallaxPos.y * 0.6}px, 0)`,
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-8 md:py-16 z-10">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left — Identity & Technical Telemetry */}
-          <div id="hero-content" className="lg:col-span-7">
-            {/* Small Spec Label */}
-            <div className="hero-label mb-5">
-              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#0C0C0C]/90 border border-primary/30 backdrop-blur-md shadow-[0_0_20px_rgba(0,212,255,0.15)]">
-                <span className="w-2 h-2 rounded-full bg-accent-green shadow-[0_0_8px_#10B981] animate-pulse" />
-                <span className="font-mono text-xs tracking-[0.2em] uppercase text-primary font-bold">
-                  {HERO_TITLE}
-                </span>
-              </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Channel Breadcrumb & Re-run Trigger */}
+          <div className="border border-console-border bg-[#0B0E0B] px-3.5 py-1.5 mb-8 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-phosphor font-bold">[CH_01]</span>
+              <span className="text-term-dim">//</span>
+              <span className="text-term-muted uppercase">HARDWARE_BENCH_INITIALIZE</span>
+              <span className="hidden sm:inline text-term-dim">·</span>
+              <span className="hidden sm:inline text-term-muted">ADDR: 0x00FF</span>
             </div>
-
-            {/* Monumental Hero Name Typography */}
-            <h1
-              id="hero-heading"
-              className="hero-title text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] font-black mb-3 tracking-tighter leading-[0.92] text-transparent bg-clip-text bg-gradient-to-r from-text-bright via-text-primary to-primary/90"
-              style={{ opacity: 0 }}
-            >
-              VINESH<br />SHANMUGAM
-            </h1>
-
-            {/* Subtitle / Spec */}
-            <div className="hero-subtitle mb-5" style={{ opacity: 0 }}>
-              <p className="font-mono text-xs sm:text-sm tracking-[0.2em] text-primary/90 uppercase flex items-center gap-2 font-semibold">
-                <Cpu size={15} className="text-primary animate-pulse" />
-                {HERO_TITLE}
-              </p>
-              <p className="font-mono text-xs text-text-muted mt-1 tracking-wider">
-                {HERO_SUBTITLE}
-              </p>
-            </div>
-
-            {/* Core Brand Statement */}
-            <p
-              className="hero-statement text-xl md:text-2xl font-semibold text-text-bright mb-4 leading-snug max-w-2xl"
-              style={{ opacity: 0 }}
-            >
-              "Building intelligent systems where{' '}
-              <span className="text-primary border-b border-primary/40 pb-0.5">hardware</span>,{' '}
-              <span className="text-secondary border-b border-secondary/40 pb-0.5">software</span> and{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary font-bold">AI</span> meet."
-            </p>
-
-            {/* Narrative Description */}
-            <p
-              className="hero-description text-text-secondary text-base leading-relaxed mb-7 max-w-xl"
-              style={{ opacity: 0 }}
-            >
-              I design and build end-to-end intelligent systems that connect physical sensors, embedded microcontrollers,
-              on-device ML inference, cloud platforms and real-time dashboard applications.
-            </p>
-
-            {/* System Pipeline Architecture Preview */}
-            <div className="hero-hud-data mb-8 p-3 rounded-xl bg-[#0C0C0C]/80 border border-border-subtle backdrop-blur-md max-w-xl" style={{ opacity: 0 }}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-[10px] text-text-muted uppercase tracking-widest flex items-center gap-1.5">
-                  <Activity size={12} className="text-accent-green" />
-                  SYSTEM PIPELINE ARCHITECTURE
-                </span>
-                <span className="font-mono text-[10px] text-primary font-bold">ARCHITECTURE PREVIEW</span>
-              </div>
-              <div className="grid grid-cols-6 gap-1 font-mono text-[9px] text-center">
-                <div className="p-1.5 rounded bg-[#050505] border border-border-subtle text-accent-green font-semibold">SENSOR</div>
-                <div className="p-1.5 rounded bg-[#050505] border border-border-subtle text-primary font-semibold">ESP32</div>
-                <div className="p-1.5 rounded bg-[#050505] border border-border-subtle text-secondary font-semibold">EDGE ML</div>
-                <div className="p-1.5 rounded bg-[#050505] border border-border-subtle text-accent-amber font-semibold">FASTAPI</div>
-                <div className="p-1.5 rounded bg-[#050505] border border-border-subtle text-blue-400 font-semibold">CLOUD</div>
-                <div className="p-1.5 rounded bg-[#050505] border border-border-subtle text-pink-400 font-semibold">REACT</div>
-              </div>
-            </div>
-
-            {/* CTAs with Magnetic Buttons */}
-            <div className="flex flex-wrap gap-3 items-center">
-              <MagneticButton strength={0.25}>
-                <button
-                  onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="hero-cta btn-primary shadow-glow-cyan"
-                  style={{ opacity: 0 }}
-                  aria-label="View engineering projects"
-                >
-                  View Projects
-                  <ArrowRight size={16} />
-                </button>
-              </MagneticButton>
-
-              <MagneticButton strength={0.2}>
-                <button
-                  onClick={() => setResumeOpen(true)}
-                  className="hero-cta btn-outline flex items-center gap-2"
-                  style={{ opacity: 0 }}
-                  aria-label="Open Resume PDF viewer"
-                >
-                  <FileText size={16} className="text-primary" />
-                  Resume PDF
-                </button>
-              </MagneticButton>
-
-              <a
-                href="https://github.com/Vinzz006"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hero-cta btn-ghost"
-                style={{ opacity: 0 }}
-                aria-label="GitHub profile"
+            <div className="flex items-center gap-3 text-[11px]">
+              <span className="text-term-dim hidden sm:inline">BAUD: 115200</span>
+              <button
+                onClick={handleRerunBoot}
+                className="text-term-muted hover:text-phosphor transition-colors flex items-center gap-1"
+                title="Re-run 1.5s BIOS boot sequence"
               >
-                <GithubIcon size={16} />
-                GitHub
-              </a>
-              <a
-                href="https://www.linkedin.com/in/vinesh-shanmugam-109215363"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hero-cta btn-ghost"
-                style={{ opacity: 0 }}
-                aria-label="LinkedIn profile"
-              >
-                <LinkedinIcon size={16} />
-                LinkedIn
-              </a>
-              <a
-                href="mailto:shanmugamvinesh75@gmail.com"
-                className="hero-cta btn-ghost"
-                style={{ opacity: 0 }}
-                aria-label="Send direct email"
-              >
-                <Mail size={16} />
-                Contact
-              </a>
+                <RotateCcw size={11} />
+                <span>[RE-RUN BOOT]</span>
+              </button>
             </div>
           </div>
 
-          {/* Right — Cinematic Integrated Portrait with BorderBeam */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end relative">
-            <CinematicHeroPortrait parallax={parallaxPos} reduced={reduced} />
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+            {/* Left Column: Identity, Status Panel, Bio & Terminal CTAs */}
+            <div className="lg:col-span-7 flex flex-col justify-start">
+              {/* Monospace Name Heading */}
+              <h1
+                id="hero-heading"
+                className="text-4xl sm:text-5xl md:text-6xl font-black text-term-bright tracking-tight leading-[1.0] uppercase mb-3"
+              >
+                {OWNER_NAME}
+              </h1>
+
+              {/* Typed Role Line with Blinking Cursor */}
+              <div className="text-sm sm:text-base text-phosphor font-bold tracking-wide flex items-center gap-1.5 mb-6 min-h-[28px]">
+                <span className="text-term-dim">&gt;</span>
+                <span>{typedRole}</span>
+                <span className="w-2.5 h-4 sm:h-5 bg-phosphor animate-blink inline-block" aria-hidden="true" />
+              </div>
+
+              {/* Live Hardware Status Panel (Configurable in src/data/profile.ts) */}
+              <div className="console-panel border border-console-border p-3.5 sm:p-4 mb-6 relative bg-[#090C09]">
+                <div className="flex items-center justify-between border-b border-console-border pb-2 mb-2.5 text-[10px]">
+                  <div className="flex items-center gap-2">
+                    <span className="led-phosphor animate-pulse" />
+                    <span className="text-phosphor font-bold uppercase tracking-wider">
+                      BENCH STATUS REGISTER // 0x00
+                    </span>
+                  </div>
+                  <span className="text-term-dim uppercase">REALTIME TELEMETRY</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                  {STATUS_PANEL.location && !STATUS_PANEL.location.trim().toUpperCase().startsWith('TODO') && (
+                    <div className="p-2 border border-console-border bg-[#040504]">
+                      <span className="text-[10px] text-term-dim block uppercase">LOCATION:</span>
+                      <span className="text-term-bright font-semibold">{STATUS_PANEL.location}</span>
+                    </div>
+                  )}
+                  {STATUS_PANEL.status && !STATUS_PANEL.status.trim().toUpperCase().startsWith('TODO') && (
+                    <div className="p-2 border border-console-border bg-[#040504]">
+                      <span className="text-[10px] text-term-dim block uppercase">OPPORTUNITY STATUS:</span>
+                      <span className="text-phosphor font-bold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 bg-phosphor inline-block" />
+                        {STATUS_PANEL.status}
+                      </span>
+                    </div>
+                  )}
+                  {STATUS_PANEL.stack && !STATUS_PANEL.stack.trim().toUpperCase().startsWith('TODO') && (
+                    <div className="p-2 border border-console-border bg-[#040504]">
+                      <span className="text-[10px] text-term-dim block uppercase">CORE STACK:</span>
+                      <span className="text-amber font-semibold truncate block" title={STATUS_PANEL.stack}>
+                        {STATUS_PANEL.stack}
+                      </span>
+                    </div>
+                  )}
+                  {STATUS_PANEL.firmwareVersion && !STATUS_PANEL.firmwareVersion.trim().toUpperCase().startsWith('TODO') && (
+                    <div className="p-2 border border-console-border bg-[#040504]">
+                      <span className="text-[10px] text-term-dim block uppercase">FIRMWARE:</span>
+                      <span className="text-term-bright font-semibold">{STATUS_PANEL.firmwareVersion}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Core Preserved Brand Statement */}
+              <p className="text-base sm:text-lg font-bold text-term-bright mb-3 leading-snug">
+                Building intelligent systems where{' '}
+                <span className="text-phosphor border-b border-phosphor/40 pb-0.5">hardware</span>,{' '}
+                <span className="text-amber border-b border-amber/40 pb-0.5">software</span> and{' '}
+                <span className="text-term-bright border-b border-white/40 pb-0.5">AI</span> meet.
+              </p>
+
+              {/* Preserved Narrative Description */}
+              <p className="font-sans text-term-text text-sm sm:text-base leading-relaxed mb-6 max-w-xl">
+                I design and build end-to-end intelligent systems that connect physical sensors,
+                embedded microcontrollers, on-device ML inference, cloud platforms and real-time dashboard applications.
+              </p>
+
+              {/* System Pipeline Architecture Preview */}
+              <div className="border border-console-border bg-[#080B08] p-3 mb-7 max-w-xl">
+                <div className="flex items-center justify-between mb-2 text-[10px] text-term-dim">
+                  <span className="text-phosphor uppercase font-semibold">BUS ARCHITECTURE FLOW:</span>
+                  <span>6 CHANNELS</span>
+                </div>
+                <div className="grid grid-cols-6 gap-1 text-[9px] text-center font-bold">
+                  <div className="p-1 border border-console-border bg-[#040504] text-phosphor">SENSOR</div>
+                  <div className="p-1 border border-console-border bg-[#040504] text-phosphor">ESP32</div>
+                  <div className="p-1 border border-console-border bg-[#040504] text-amber">EDGE ML</div>
+                  <div className="p-1 border border-console-border bg-[#040504] text-term-text">FASTAPI</div>
+                  <div className="p-1 border border-console-border bg-[#040504] text-term-text">CLOUD</div>
+                  <div className="p-1 border border-console-border bg-[#040504] text-phosphor">REACT</div>
+                </div>
+              </div>
+
+              {/* Terminal Command Styled CTAs */}
+              <div className="space-y-2">
+                <div className="text-[10px] text-term-dim uppercase tracking-wider mb-1">
+                  &gt; EXECUTE BENCH COMMANDS:
+                </div>
+                <div className="flex flex-wrap gap-2.5 items-center">
+                  {/* Open Resume PDF Command */}
+                  <button
+                    onClick={() => setResumeOpen(true)}
+                    className="console-btn text-xs py-2 px-3.5 flex items-center gap-2"
+                  >
+                    <FileText size={13} />
+                    <span>$ open resume.pdf</span>
+                  </button>
+
+                  {/* View Projects Command */}
+                  <button
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('load-lazy-section', { detail: 'projects' }));
+                      document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="console-btn-amber text-xs py-2 px-3.5 flex items-center gap-2"
+                  >
+                    <span>$ view projects</span>
+                    <ArrowRight size={13} />
+                  </button>
+
+                  {/* Direct Email Command */}
+                  <a
+                    href={`mailto:${CONTACT_LINKS.email}`}
+                    className="console-btn-ghost text-xs py-2 px-3 flex items-center gap-1.5"
+                  >
+                    <Mail size={13} />
+                    <span>$ mailto:vinesh</span>
+                  </a>
+
+                  {/* GitHub Remote Command */}
+                  <a
+                    href={CONTACT_LINKS.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="console-btn-ghost text-xs py-2 px-3 flex items-center gap-1.5"
+                  >
+                    <GithubIcon size={13} />
+                    <span>$ git remote</span>
+                  </a>
+
+                  {/* LinkedIn Command */}
+                  <a
+                    href={CONTACT_LINKS.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="console-btn-ghost text-xs py-2 px-3 flex items-center gap-1.5"
+                  >
+                    <LinkedinIcon size={13} />
+                    <span>$ linkedin</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: 60fps Microcontroller Pinout & Live Oscilloscope Workbench */}
+            <div className="lg:col-span-5 w-full">
+              <MicrocontrollerWorkbench />
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* 5. Marquee Continuous Technology Stream */}
-        <div className="mt-14 pt-6 border-t border-border-subtle/40">
-          <Marquee pauseOnHover repeat={4} className="py-2">
-            {techBadges.map((badge) => (
-              <div
-                key={badge}
-                className="px-3.5 py-1.5 rounded-xl bg-[#0C0C0C]/80 border border-border-subtle text-xs font-mono text-text-secondary flex items-center gap-2 backdrop-blur-md hover:border-primary/50 hover:text-primary transition-all duration-300"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                {badge}
-              </div>
-            ))}
-          </Marquee>
-        </div>
-      </div>
-
-      {/* Cinematic "SCROLL TO EXPLORE" Indicator */}
-      <div className="mt-2 flex flex-col items-center gap-2 z-10 pb-4">
-        <button
-          onClick={handleScroll}
-          className="text-text-muted hover:text-primary transition-colors flex flex-col items-center gap-2 group"
-          aria-label="Scroll down to explore about section"
-        >
-          <span className="font-mono text-[10px] tracking-[0.3em] uppercase group-hover:text-primary transition-colors font-semibold">
-            SCROLL TO EXPLORE
-          </span>
-          <div className="w-[1.5px] h-8 bg-gradient-to-b from-primary via-primary/50 to-transparent relative overflow-hidden">
-            <div className="w-full h-1/2 bg-white animate-pulse" />
-          </div>
-          <ChevronDown size={14} className="text-primary animate-bounce -mt-1" />
-        </button>
-      </div>
-
-      {/* Resume Modal */}
+      {/* Official Resume Modal */}
       <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
-    </section>
-  );
-}
-
-/* ─── Cinematic Integrated Portrait ─────────────────────────────────────────────── */
-function CinematicHeroPortrait({
-  parallax,
-  reduced,
-}: {
-  parallax: { x: number; y: number; rotateX: number; rotateY: number };
-  reduced: boolean;
-}) {
-  return (
-    <motion.div
-      initial={reduced ? {} : { opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, delay: 0.15 }}
-      className="hero-portrait-wrap relative w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[420px] group perspective-1000"
-      aria-label="Cinematic Portrait of Vinesh Shanmugam"
-      style={{
-        transform: reduced
-          ? 'none'
-          : `translate3d(${parallax.x * 1.5}px, ${parallax.y * 1.5}px, 0) rotateX(${parallax.rotateX}deg) rotateY(${parallax.rotateY}deg)`,
-      }}
-    >
-      {/* 1. Multi-layered cyan & violet glow behind portrait */}
-      <div
-        className="absolute -inset-6 rounded-full opacity-50 blur-3xl pointer-events-none group-hover:opacity-75 transition-opacity duration-700"
-        style={{
-          background: 'radial-gradient(circle, rgba(0,212,255,0.3) 0%, rgba(124,58,237,0.25) 50%, transparent 80%)',
-        }}
-        aria-hidden="true"
-      />
-
-      {/* 2. Sleek integrated portrait container with BorderBeam */}
-      <div className="relative rounded-3xl overflow-hidden border border-primary/40 bg-bg-secondary/90 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-xl transition-all duration-500 group-hover:border-primary/70 group-hover:shadow-[0_0_40px_rgba(0,212,255,0.25)]">
-        <BorderBeam size={220} duration={10} colorFrom="#00D4FF" colorTo="#7C3AED" />
-
-        {/* Futuristic HUD Corner Crosshairs */}
-        <div className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-primary z-30 pointer-events-none opacity-80" />
-        <div className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-primary z-30 pointer-events-none opacity-80" />
-        <div className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-primary z-30 pointer-events-none opacity-80" />
-        <div className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-primary z-30 pointer-events-none opacity-80" />
-
-        {/* Top Floating Status Overlay (Name Only) */}
-        <div className="absolute top-4 left-4 z-30 pointer-events-none">
-          <div className="px-3 py-1 rounded-md bg-bg-primary/90 backdrop-blur-md border border-border-subtle flex items-center gap-2 shadow-lg">
-            <span className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
-            <span className="font-mono text-[10px] font-bold text-text-bright tracking-wider uppercase">
-              VINESH SHANMUGAM
-            </span>
-          </div>
-        </div>
-
-        {/* Portrait Image (1:1 aspect ratio matching the circular neon artwork) */}
-        <div className="relative aspect-square w-full overflow-hidden bg-[#050505] flex items-center justify-center">
-          <img
-            src={vineshPortrait}
-            alt="Vinesh Shanmugam"
-            className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-            loading="eager"
-          />
-
-          {/* Cinematic Volumetric Blue Rim Gradient & Vignette */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                'radial-gradient(circle at 50% 50%, transparent 75%, rgba(5,10,15,0.4) 100%)',
-            }}
-          />
-        </div>
-      </div>
-    </motion.div>
+    </>
   );
 }

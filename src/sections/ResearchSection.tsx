@@ -177,11 +177,12 @@ export default function ResearchSection() {
             {/* Left Controls & Metrics */}
             <div className="lg:col-span-5 space-y-5">
               <div>
-                <div className="flex justify-between font-mono text-xs text-text-secondary mb-2">
+                <label htmlFor="sampling-hz-slider" className="flex justify-between font-mono text-xs text-text-secondary mb-2 cursor-pointer">
                   <span>SENSOR SAMPLING FREQUENCY</span>
                   <span className="text-primary font-bold">{sampleHz} Hz</span>
-                </div>
+                </label>
                 <input
+                  id="sampling-hz-slider"
                   type="range"
                   min="20"
                   max="250"
@@ -189,6 +190,7 @@ export default function ResearchSection() {
                   value={sampleHz}
                   onChange={(e) => setSampleHz(Number(e.target.value))}
                   className="w-full accent-primary cursor-pointer"
+                  aria-label="Sensor sampling frequency in Hertz"
                 />
               </div>
 

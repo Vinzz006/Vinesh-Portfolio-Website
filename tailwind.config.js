@@ -4,6 +4,33 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Hardware Debug Console & Workbench Tokens
+        console: {
+          base: '#060806',
+          panel: '#0B0E0B',
+          elevated: '#111611',
+          well: '#040504',
+          border: '#1A231A',
+          'border-medium': '#293629',
+          'border-active': 'rgba(57, 255, 136, 0.45)',
+        },
+        phosphor: {
+          DEFAULT: '#39FF88',
+          dim: '#1FB85D',
+          glow: 'rgba(57, 255, 136, 0.2)',
+        },
+        amber: {
+          DEFAULT: '#FFB000',
+          dim: '#D99600',
+          glow: 'rgba(255, 176, 0, 0.2)',
+        },
+        term: {
+          bright: '#EAF2EA',
+          text: '#CCDACC',
+          muted: '#9DB09D',
+          dim: '#7E917E',
+        },
+        // Existing legacy tokens for backward compatibility
         bg: {
           primary: '#050505',
           secondary: '#0C0C0C',
@@ -42,13 +69,17 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        mono: ['"JetBrains Mono"', '"IBM Plex Mono"', 'monospace'],
       },
       backgroundImage: {
         'grid-pattern':
           "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231A2840' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
         'dot-pattern':
           "radial-gradient(circle, #1A2840 1px, transparent 1px)",
+        'graticule-grid':
+          'linear-gradient(rgba(57, 255, 136, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(57, 255, 136, 0.04) 1px, transparent 1px)',
+        'pcb-trace':
+          'radial-gradient(circle, rgba(57, 255, 136, 0.07) 1px, transparent 1px)',
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -56,6 +87,8 @@ export default {
         float: 'float 6s ease-in-out infinite',
         'border-flow': 'borderFlow 3s linear infinite',
         shimmer: 'shimmer 2s linear infinite',
+        'scanline': 'scanline 8s linear infinite',
+        'blink': 'blink 1s step-end infinite',
       },
       keyframes: {
         float: {
@@ -70,8 +103,19 @@ export default {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
         },
+        scanline: {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(1000%)' },
+        },
+        blink: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' },
+        },
       },
       boxShadow: {
+        'glow-phosphor': '0 0 20px rgba(57, 255, 136, 0.35)',
+        'glow-phosphor-sm': '0 0 8px rgba(57, 255, 136, 0.2)',
+        'glow-amber': '0 0 20px rgba(255, 176, 0, 0.35)',
         'glow-cyan': '0 0 20px rgba(0, 212, 255, 0.3)',
         'glow-violet': '0 0 20px rgba(124, 58, 237, 0.3)',
         'glow-sm': '0 0 10px rgba(0, 212, 255, 0.15)',

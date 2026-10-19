@@ -12,7 +12,7 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       output: {
-        manualChunks(id) {
+        manualChunks(id: string) {
           if (id.includes('/three/') || id.includes('\\three\\')) {
             return 'vendor-three';
           }

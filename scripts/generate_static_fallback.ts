@@ -16,6 +16,7 @@ import {
   STATUS_PANEL,
   CONTACT_LINKS,
   BIOGRAPHY,
+  PROFILE_IMAGE,
   projectDatasheets,
   skillCategories,
   timelineItems,
@@ -32,6 +33,60 @@ function escapeHtml(str: string | undefined | null): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+function renderOperatorIdPhotoStatic(variant: 'hero' | 'about', aboveFold: boolean): string {
+  const isRing = PROFILE_IMAGE.frameStyle === 'ring';
+  const isHero = variant === 'hero';
+  const imgSet = isHero ? PROFILE_IMAGE.hero : PROFILE_IMAGE.about;
+  const imgDimension = isHero ? 400 : 800;
+  const sizesAttr = isHero
+    ? '(max-width: 640px) 144px, (max-width: 1024px) 176px, 200px'
+    : '(max-width: 640px) 260px, (max-width: 1024px) 300px, 320px';
+
+  return `
+    <div class="group relative inline-flex flex-col font-mono select-none" style="touch-action: manipulation;">
+      <div class="relative overflow-hidden bg-[#060806] ${
+        isRing
+          ? 'rounded-full border border-phosphor/70 shadow-[0_0_14px_rgba(57,255,136,0.22)]'
+          : 'border border-phosphor/40 shadow-[0_0_10px_rgba(57,255,136,0.12)]'
+      } ${
+        isHero
+          ? 'w-36 h-36 sm:w-44 sm:h-44'
+          : 'w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80'
+      } aspect-square transition-all duration-300">
+        <picture class="w-full h-full block">
+          <source type="image/webp" srcset="${imgSet.webp400} 400w, ${imgSet.webp800} 800w" sizes="${sizesAttr}" />
+          <source type="image/jpeg" srcset="${imgSet.jpg400} 400w, ${imgSet.jpg800} 800w" sizes="${sizesAttr}" />
+          <img src="${imgSet.jpg400}" alt="${escapeHtml(PROFILE_IMAGE.alt)}" width="${imgDimension}" height="${imgDimension}" decoding="async" loading="${aboveFold ? 'eager' : 'lazy'}" ${aboveFold ? 'fetchpriority="high"' : ''} class="w-full h-full object-cover block transition-all duration-300 ${isRing ? 'rounded-full' : ''} contrast-[1.08] brightness-[0.96] sepia-[0.32] hue-rotate-[75deg]" />
+        </picture>
+        <div class="absolute inset-0 bg-[#39FF88]/15 mix-blend-color pointer-events-none ${isRing ? 'rounded-full' : ''}" aria-hidden="true"></div>
+        <div class="absolute inset-0 pointer-events-none opacity-40 mix-blend-overlay ${isRing ? 'rounded-full' : ''}" style="background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0px, rgba(0, 0, 0, 0.4) 1px, transparent 1px, transparent 2px);" aria-hidden="true"></div>
+        ${!isRing ? `
+          <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+            <span class="absolute top-0 left-0 w-2.5 h-2.5 sm:w-3 sm:h-3 border-t-2 border-l-2 border-phosphor"></span>
+            <span class="absolute top-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 border-t-2 border-r-2 border-phosphor"></span>
+            <span class="absolute bottom-0 left-0 w-2.5 h-2.5 sm:w-3 sm:h-3 border-b-2 border-l-2 border-phosphor"></span>
+            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 border-b-2 border-r-2 border-phosphor"></span>
+            <span class="absolute top-1.5 right-1.5 text-[8px] text-phosphor/60 font-mono font-bold leading-none">+</span>
+          </div>
+        ` : ''}
+      </div>
+      <div class="bg-[#090C09] border border-console-border border-t-0 p-1.5 sm:p-2 text-left font-mono ${isRing ? 'mt-2 border-t rounded-sm text-center' : ''} ${isHero ? 'w-36 sm:w-44' : 'w-64 sm:w-72 lg:w-80'}">
+        <div class="flex items-center justify-between gap-1 text-[9px] sm:text-[10px] leading-tight">
+          <div class="flex items-center gap-1.5 truncate">
+            <span class="w-1.5 h-1.5 rounded-full bg-phosphor inline-block shrink-0 animate-pulse" aria-hidden="true"></span>
+            <span class="text-term-bright font-bold truncate">${escapeHtml(PROFILE_IMAGE.operatorId)}</span>
+          </div>
+          <span class="text-phosphor font-semibold text-[8px] sm:text-[9px] shrink-0">[TAP]</span>
+        </div>
+        <div class="flex items-center justify-between text-[8px] sm:text-[9px] text-term-dim mt-0.5">
+          <span class="text-phosphor truncate">${escapeHtml(PROFILE_IMAGE.statusText)}</span>
+          <span class="text-term-dim uppercase hidden sm:inline">CAM_FEED // 01</span>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 export function generateStaticFallback(): string {
@@ -236,42 +291,50 @@ export function generateStaticFallback(): string {
                   <span class="w-2.5 h-4 sm:h-5 bg-phosphor inline-block" aria-hidden="true"></span>
                 </div>
 
-                <!-- Live Hardware Status Panel -->
-                <div class="console-panel border border-console-border p-3.5 sm:p-4 mb-6 relative bg-[#090C09]">
-                  <div class="flex items-center justify-between border-b border-console-border pb-2 mb-2.5 text-[10px]">
-                    <div class="flex items-center gap-2">
-                      <span class="led-phosphor"></span>
-                      <span class="text-phosphor font-bold uppercase tracking-wider">
-                        BENCH STATUS REGISTER // 0x00
-                      </span>
-                    </div>
-                    <span class="text-term-dim uppercase">REALTIME TELEMETRY</span>
+                <!-- Hardware Operator ID & Status Register Bank -->
+                <div class="flex flex-col sm:flex-row gap-4 mb-6 items-start">
+                  <!-- Operator ID Photo Card -->
+                  <div class="shrink-0 self-center sm:self-start">
+                    ${renderOperatorIdPhotoStatic('hero', true)}
                   </div>
 
-                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                    ${!STATUS_PANEL.location.trim().toUpperCase().startsWith('TODO') ? `
-                    <div class="p-2 border border-console-border bg-[#040504]">
-                      <span class="text-[10px] text-term-dim block uppercase">LOCATION:</span>
-                      <span class="text-term-bright font-semibold">${escapeHtml(STATUS_PANEL.location)}</span>
-                    </div>` : ''}
-                    ${!STATUS_PANEL.status.trim().toUpperCase().startsWith('TODO') ? `
-                    <div class="p-2 border border-console-border bg-[#040504]">
-                      <span class="text-[10px] text-term-dim block uppercase">OPPORTUNITY STATUS:</span>
-                      <span class="text-phosphor font-bold flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 bg-phosphor inline-block"></span>
-                        ${escapeHtml(STATUS_PANEL.status)}
-                      </span>
-                    </div>` : ''}
-                    ${!STATUS_PANEL.stack.trim().toUpperCase().startsWith('TODO') ? `
-                    <div class="p-2 border border-console-border bg-[#040504]">
-                      <span class="text-[10px] text-term-dim block uppercase">CORE STACK:</span>
-                      <span class="text-amber font-semibold truncate block">${escapeHtml(STATUS_PANEL.stack)}</span>
-                    </div>` : ''}
-                    ${STATUS_PANEL.firmwareVersion && !STATUS_PANEL.firmwareVersion.trim().toUpperCase().startsWith('TODO') ? `
-                    <div class="p-2 border border-console-border bg-[#040504]">
-                      <span class="text-[10px] text-term-dim block uppercase">FIRMWARE:</span>
-                      <span class="text-term-bright font-semibold">${escapeHtml(STATUS_PANEL.firmwareVersion)}</span>
-                    </div>` : ''}
+                  <!-- Live Hardware Status Panel -->
+                  <div class="flex-1 w-full min-w-0 console-panel border border-console-border p-3 sm:p-3.5 bg-[#090C09]">
+                    <div class="flex items-center justify-between border-b border-console-border pb-2 mb-2.5 text-[10px]">
+                      <div class="flex items-center gap-2">
+                        <span class="led-phosphor"></span>
+                        <span class="text-phosphor font-bold uppercase tracking-wider">
+                          BENCH STATUS REGISTER // 0x00
+                        </span>
+                      </div>
+                      <span class="text-term-dim uppercase">REALTIME TELEMETRY</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      ${!STATUS_PANEL.location.trim().toUpperCase().startsWith('TODO') ? `
+                      <div class="p-2 border border-console-border bg-[#040504]">
+                        <span class="text-[10px] text-term-dim block uppercase">LOCATION:</span>
+                        <span class="text-term-bright font-semibold">${escapeHtml(STATUS_PANEL.location)}</span>
+                      </div>` : ''}
+                      ${!STATUS_PANEL.status.trim().toUpperCase().startsWith('TODO') ? `
+                      <div class="p-2 border border-console-border bg-[#040504]">
+                        <span class="text-[10px] text-term-dim block uppercase">OPPORTUNITY STATUS:</span>
+                        <span class="text-phosphor font-bold flex items-center gap-1.5">
+                          <span class="w-1.5 h-1.5 bg-phosphor inline-block"></span>
+                          ${escapeHtml(STATUS_PANEL.status)}
+                        </span>
+                      </div>` : ''}
+                      ${!STATUS_PANEL.stack.trim().toUpperCase().startsWith('TODO') ? `
+                      <div class="p-2 border border-console-border bg-[#040504]">
+                        <span class="text-[10px] text-term-dim block uppercase">CORE STACK:</span>
+                        <span class="text-amber font-semibold truncate block">${escapeHtml(STATUS_PANEL.stack)}</span>
+                      </div>` : ''}
+                      ${STATUS_PANEL.firmwareVersion && !STATUS_PANEL.firmwareVersion.trim().toUpperCase().startsWith('TODO') ? `
+                      <div class="p-2 border border-console-border bg-[#040504]">
+                        <span class="text-[10px] text-term-dim block uppercase">FIRMWARE:</span>
+                        <span class="text-term-bright font-semibold">${escapeHtml(STATUS_PANEL.firmwareVersion)}</span>
+                      </div>` : ''}
+                    </div>
                   </div>
                 </div>
 
@@ -340,6 +403,72 @@ export function generateStaticFallback(): string {
                     </div>
                     <div class="text-[10px] text-term-dim">[PRE-RENDERED HARDWARE SCHEMATIC]</div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- About Section (System Architecture & Dossier Photo) -->
+        <section id="about" class="py-20 relative font-mono text-xs border-b border-console-border bg-[#060806]" aria-labelledby="about-heading">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-console-border pb-3 mb-10">
+              <div class="flex items-center gap-2">
+                <span class="text-phosphor font-bold">[02]</span>
+                <span class="text-term-dim">//</span>
+                <span class="text-term-bright font-bold tracking-wider">SYSTEM_ARCHITECTURE · BIOGRAPHY</span>
+              </div>
+              <div class="flex items-center gap-3 text-[11px] text-term-muted">
+                <span>DISCIPLINE: ECE</span>
+                <span class="text-term-dim">|</span>
+                <span class="text-phosphor">SPEC_READY</span>
+              </div>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8 items-start mb-12">
+              <div class="lg:col-span-8">
+                <div class="text-[11px] text-phosphor tracking-widest uppercase mb-2">
+                  &gt; CORE_THESIS
+                </div>
+                <h2 id="about-heading" class="text-2xl sm:text-4xl font-black text-term-bright mb-5 font-mono tracking-tight leading-tight">
+                  Where physical hardware becomes <span class="text-phosphor">intelligent</span> through software &amp; machine learning.
+                </h2>
+                <p class="text-base sm:text-lg text-term-text leading-relaxed font-sans font-normal">
+                  ${escapeHtml(BIOGRAPHY.extendedBio)}
+                </p>
+              </div>
+
+              <div class="lg:col-span-4 flex justify-center lg:justify-end">
+                ${renderOperatorIdPhotoStatic('about', false)}
+              </div>
+            </div>
+
+            <!-- Computed Hardware Metrics Registers -->
+            <div class="mb-12">
+              <div class="text-[11px] text-term-muted tracking-widest uppercase mb-3 flex items-center justify-between">
+                <span>[REGISTER_BANK] COMPUTED REPOSITORY METRICS</span>
+                <span class="text-term-dim text-[10px]">SRC: GITHUB_INVENTORY</span>
+              </div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="border border-console-border bg-console-panel p-4">
+                  <span class="text-[10px] text-term-muted uppercase block tracking-wider mb-1">REG_00: PROJECTS</span>
+                  <div class="text-3xl font-black text-term-bright font-mono">10</div>
+                  <p class="text-[11px] text-term-muted mt-1 font-sans">Full Systems Documented</p>
+                </div>
+                <div class="border border-console-border bg-console-panel p-4">
+                  <span class="text-[10px] text-term-muted uppercase block tracking-wider mb-1">REG_01: OPEN REPOS</span>
+                  <div class="text-3xl font-black text-phosphor font-mono">10</div>
+                  <p class="text-[11px] text-term-muted mt-1 font-sans">Public Code Repositories</p>
+                </div>
+                <div class="border border-console-border bg-console-panel p-4">
+                  <span class="text-[10px] text-term-muted uppercase block tracking-wider mb-1">REG_02: TECH STACK</span>
+                  <div class="text-3xl font-black text-amber font-mono">48</div>
+                  <p class="text-[11px] text-term-muted mt-1 font-sans">Hardware, AI &amp; Web Tools</p>
+                </div>
+                <div class="border border-console-border bg-console-panel p-4">
+                  <span class="text-[10px] text-term-muted uppercase block tracking-wider mb-1">REG_03: ACADEMIC</span>
+                  <div class="text-3xl font-black text-term-bright font-mono">B.E.</div>
+                  <p class="text-[11px] text-term-muted mt-1 font-sans">ECE (2024–2028)</p>
                 </div>
               </div>
             </div>

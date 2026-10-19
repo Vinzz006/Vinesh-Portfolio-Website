@@ -21,6 +21,15 @@ function scanHtmlFiles(dir) {
   return htmlFiles;
 }
 
+// Ensure profile-original.png is strictly excluded from production bundle
+const distOriginal = path.join(distDir, 'images/profile-original.png');
+if (fs.existsSync(distOriginal)) {
+  fs.unlinkSync(distOriginal);
+  console.log('🧹 Removed profile-original.png from production dist/images/ bundle');
+} else {
+  console.log('✓ Verified: profile-original.png is excluded from production dist/ (stored in assets-src/)');
+}
+
 const htmlFiles = scanHtmlFiles(distDir);
 if (htmlFiles.length === 0) {
   console.error('❌ Postbuild check failed: No HTML files found in dist/');

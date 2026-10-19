@@ -4,6 +4,7 @@ import { GithubIcon, LinkedinIcon } from '../components/Icons';
 import ResumeModal from '../components/ResumeModal';
 import BootSequenceIntro from '../components/BootSequenceIntro';
 import MicrocontrollerWorkbench from '../components/MicrocontrollerWorkbench';
+import OperatorIdPhoto from '../components/OperatorIdPhoto';
 import { OWNER_NAME, HERO_TITLE, STATUS_PANEL, CONTACT_LINKS } from '../data/profile';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 
@@ -89,48 +90,56 @@ export default function HeroSection() {
                 <span className="w-2.5 h-4 sm:h-5 bg-phosphor animate-blink inline-block" aria-hidden="true" />
               </div>
 
-              {/* Live Hardware Status Panel (Configurable in src/data/profile.ts) */}
-              <div className="console-panel border border-console-border p-3.5 sm:p-4 mb-6 relative bg-[#090C09]">
-                <div className="flex items-center justify-between border-b border-console-border pb-2 mb-2.5 text-[10px]">
-                  <div className="flex items-center gap-2">
-                    <span className="led-phosphor animate-pulse" />
-                    <span className="text-phosphor font-bold uppercase tracking-wider">
-                      BENCH STATUS REGISTER // 0x00
-                    </span>
-                  </div>
-                  <span className="text-term-dim uppercase">REALTIME TELEMETRY</span>
+              {/* Hardware Operator ID & Status Register Bank */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-6 items-start">
+                {/* Operator ID Photo Card */}
+                <div className="shrink-0 self-center sm:self-start">
+                  <OperatorIdPhoto variant="hero" aboveFold={true} />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                  {STATUS_PANEL.location && !STATUS_PANEL.location.trim().toUpperCase().startsWith('TODO') && (
-                    <div className="p-2 border border-console-border bg-[#040504]">
-                      <span className="text-[10px] text-term-dim block uppercase">LOCATION:</span>
-                      <span className="text-term-bright font-semibold">{STATUS_PANEL.location}</span>
-                    </div>
-                  )}
-                  {STATUS_PANEL.status && !STATUS_PANEL.status.trim().toUpperCase().startsWith('TODO') && (
-                    <div className="p-2 border border-console-border bg-[#040504]">
-                      <span className="text-[10px] text-term-dim block uppercase">OPPORTUNITY STATUS:</span>
-                      <span className="text-phosphor font-bold flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-phosphor inline-block" />
-                        {STATUS_PANEL.status}
+                {/* Live Hardware Status Panel (Configurable in src/data/profile.ts) */}
+                <div className="flex-1 w-full min-w-0 console-panel border border-console-border p-3 sm:p-3.5 bg-[#090C09]">
+                  <div className="flex items-center justify-between border-b border-console-border pb-2 mb-2.5 text-[10px]">
+                    <div className="flex items-center gap-2">
+                      <span className="led-phosphor animate-pulse" />
+                      <span className="text-phosphor font-bold uppercase tracking-wider">
+                        BENCH STATUS REGISTER // 0x00
                       </span>
                     </div>
-                  )}
-                  {STATUS_PANEL.stack && !STATUS_PANEL.stack.trim().toUpperCase().startsWith('TODO') && (
-                    <div className="p-2 border border-console-border bg-[#040504]">
-                      <span className="text-[10px] text-term-dim block uppercase">CORE STACK:</span>
-                      <span className="text-amber font-semibold truncate block" title={STATUS_PANEL.stack}>
-                        {STATUS_PANEL.stack}
-                      </span>
-                    </div>
-                  )}
-                  {STATUS_PANEL.firmwareVersion && !STATUS_PANEL.firmwareVersion.trim().toUpperCase().startsWith('TODO') && (
-                    <div className="p-2 border border-console-border bg-[#040504]">
-                      <span className="text-[10px] text-term-dim block uppercase">FIRMWARE:</span>
-                      <span className="text-term-bright font-semibold">{STATUS_PANEL.firmwareVersion}</span>
-                    </div>
-                  )}
+                    <span className="text-term-dim uppercase">REALTIME TELEMETRY</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    {STATUS_PANEL.location && !STATUS_PANEL.location.trim().toUpperCase().startsWith('TODO') && (
+                      <div className="p-2 border border-console-border bg-[#040504]">
+                        <span className="text-[10px] text-term-dim block uppercase">LOCATION:</span>
+                        <span className="text-term-bright font-semibold">{STATUS_PANEL.location}</span>
+                      </div>
+                    )}
+                    {STATUS_PANEL.status && !STATUS_PANEL.status.trim().toUpperCase().startsWith('TODO') && (
+                      <div className="p-2 border border-console-border bg-[#040504]">
+                        <span className="text-[10px] text-term-dim block uppercase">OPPORTUNITY STATUS:</span>
+                        <span className="text-phosphor font-bold flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 bg-phosphor inline-block" />
+                          {STATUS_PANEL.status}
+                        </span>
+                      </div>
+                    )}
+                    {STATUS_PANEL.stack && !STATUS_PANEL.stack.trim().toUpperCase().startsWith('TODO') && (
+                      <div className="p-2 border border-console-border bg-[#040504]">
+                        <span className="text-[10px] text-term-dim block uppercase">CORE STACK:</span>
+                        <span className="text-amber font-semibold truncate block" title={STATUS_PANEL.stack}>
+                          {STATUS_PANEL.stack}
+                        </span>
+                      </div>
+                    )}
+                    {STATUS_PANEL.firmwareVersion && !STATUS_PANEL.firmwareVersion.trim().toUpperCase().startsWith('TODO') && (
+                      <div className="p-2 border border-console-border bg-[#040504]">
+                        <span className="text-[10px] text-term-dim block uppercase">FIRMWARE:</span>
+                        <span className="text-term-bright font-semibold">{STATUS_PANEL.firmwareVersion}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 

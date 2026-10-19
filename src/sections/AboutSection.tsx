@@ -4,6 +4,7 @@ import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import { animateSectionEntrance } from '../animations/anime-utils';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import ScrollTextReveal from '../components/motion/ScrollTextReveal';
+import OperatorIdPhoto from '../components/OperatorIdPhoto';
 import { projects } from '../data/projects';
 import { timelineItems } from '../data/experience';
 import { measuredResults } from '../data/metrics';
@@ -68,19 +69,25 @@ export default function AboutSection() {
           </div>
         </div>
 
-        {/* Main Statement with Text Reveal */}
-        <div className="max-w-4xl mb-12">
-          <div className="text-[11px] text-phosphor tracking-widest uppercase mb-2">
-            &gt; CORE_THESIS
+        {/* Main Statement with Text Reveal & Operator Dossier Photo */}
+        <div className="grid lg:grid-cols-12 gap-8 items-start mb-12">
+          <div className="lg:col-span-8">
+            <div className="text-[11px] text-phosphor tracking-widest uppercase mb-2">
+              &gt; CORE_THESIS
+            </div>
+            <h2 id="about-heading" className="text-2xl sm:text-4xl font-black text-term-bright mb-5 font-mono tracking-tight leading-tight">
+              Where physical hardware becomes <span className="text-phosphor">intelligent</span> through software &amp; machine learning.
+            </h2>
+            <ScrollTextReveal
+              text="I build systems where physical hardware becomes intelligent through software and machine learning. My work spans the full stack from reading a physical sensor on microcontrollers to serving model predictions and rendering real-time dashboards."
+              className="text-base sm:text-lg text-term-text leading-relaxed font-sans font-normal"
+              highlightWords={['hardware', 'software', 'machine', 'learning', 'sensor', 'microcontrollers', 'predictions', 'dashboards']}
+            />
           </div>
-          <h2 id="about-heading" className="text-2xl sm:text-4xl font-black text-term-bright mb-5 font-mono tracking-tight leading-tight">
-            Where physical hardware becomes <span className="text-phosphor">intelligent</span> through software &amp; machine learning.
-          </h2>
-          <ScrollTextReveal
-            text="I build systems where physical hardware becomes intelligent through software and machine learning. My work spans the full stack from reading a physical sensor on microcontrollers to serving model predictions and rendering real-time dashboards."
-            className="text-base sm:text-lg text-term-text leading-relaxed font-sans font-normal"
-            highlightWords={['hardware', 'software', 'machine', 'learning', 'sensor', 'microcontrollers', 'predictions', 'dashboards']}
-          />
+
+          <div className="lg:col-span-4 flex justify-center lg:justify-end">
+            <OperatorIdPhoto variant="about" aboveFold={false} />
+          </div>
         </div>
 
         {/* Computed Hardware Metrics Registers */}

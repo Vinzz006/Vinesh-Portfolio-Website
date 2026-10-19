@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Size-Adjusted Fallback Fonts (Zero Layout Shift on WebFont Swap) ─────── */
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New'), monospace;
+  ascent-override: 86.84%;
+  descent-override: 24.12%;
+  line-gap-override: 0.00%;
+  size-adjust: 105.94%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), sans-serif;
+  ascent-override: 90.20%;
+  descent-override: 22.48%;
+  line-gap-override: 0.00%;
+  size-adjust: 107.40%;
+}
+
 /* ─── Base ─────────────────────────────────────────────────────────────────── */
 @layer base {
   :root {

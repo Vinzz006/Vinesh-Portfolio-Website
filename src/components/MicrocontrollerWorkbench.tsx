@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { scheduleIdle, cancelIdle } from '../lib/idle';
 
 interface PinSpec {
   id: string;
@@ -207,11 +208,12 @@ export default function MicrocontrollerWorkbench() {
         const noise = (Math.random() - 0.5) * 1.5;
         y = midY + primary + harmonic + noise;
       } else if (waveType === 'i2c-packets') {
-        const cycle = (t * 2) % (2 * Math.PI);
-        const bit = Math.sin(t * 6) > 0 ? 1 : 0;
-        const packetEnvelope = Math.sin(t * 0.5) > 0 ? 1 : 0.2;
-        const square = bit * packetEnvelope;
-        y = midY - square * (height * 0.34) + (height * 0.17);
+        // Fast mode I2C digital burst packets with continuous clock/data activity
+        const frame = (t * 1.5) % (Math.PI * 4);
+        const byteIndex = Math.floor(frame / (Math.PI * 1.2));
+        const bitPhase = (frame * 6) % (Math.PI * 2);
+        const bitVal = Math.sin(bitPhase + byteIndex) > 0 ? 1 : -1;
+        y = midY - bitVal * (height * 0.35);
       } else if (waveType === 'square-pwm') {
         const sq = Math.sin(t * 4) > 0 ? 1 : -1;
         y = midY + sq * (height * 0.3);
@@ -234,21 +236,41 @@ export default function MicrocontrollerWorkbench() {
     animFrameRef.current = requestAnimationFrame(drawWaveform);
   }, [activePin]);
 
-  useEffect(() => {
-    animFrameRef.current = requestAnimationFrame(drawWaveform);
-    return () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-    };
-  }, [drawWaveform]);
-
-  // Adjust canvas resolution to parent size
+  // Adjust canvas resolution dynamically on mount and resize
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = Math.floor(rect.width * window.devicePixelRatio || 400);
-    canvas.height = Math.floor(rect.height * window.devicePixelRatio || 120);
-  }, []);
+
+    const setSize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const w = Math.floor(rect.width * dpr);
+      const h = Math.floor(rect.height * dpr);
+      if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+    };
+
+    setSize();
+    drawWaveform();
+
+    const ro = new ResizeObserver(() => {
+      setSize();
+      drawWaveform();
+    });
+    ro.observe(canvas);
+
+    const idleHandle = scheduleIdle(() => {
+      animFrameRef.current = requestAnimationFrame(drawWaveform);
+    }, 200);
+
+    return () => {
+      ro.disconnect();
+      cancelIdle(idleHandle);
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    };
+  }, [drawWaveform]);
 
   return (
     <div className="w-full font-mono text-xs select-none">
@@ -269,7 +291,7 @@ export default function MicrocontrollerWorkbench() {
             </span>
           </div>
           <span className="text-term-muted text-[10px]">
-            CHIP: ESP32-S3-WROOM-1 · 240MHz
+            CHIP: ESP32-WROOM-32D · 240MHz
           </span>
         </div>
 
@@ -301,11 +323,11 @@ export default function MicrocontrollerWorkbench() {
           <div className="col-span-4 bg-[#050705] border-2 border-console-border/90 p-3 text-center relative overflow-hidden flex flex-col justify-center items-center h-[160px]">
             <div className="w-2.5 h-2.5 rounded-full border border-phosphor/40 absolute top-2 left-2 bg-[#080B08]" title="Pin 1 Index Notch" />
             <span className="text-[9px] text-term-muted tracking-widest uppercase">ESPRESSIF</span>
-            <span className="text-xs font-black text-term-bright tracking-tight mt-0.5">ESP32-S3</span>
+            <span className="text-xs font-black text-term-bright tracking-tight mt-0.5">ESP32</span>
             <span className="text-[8px] text-phosphor/80 font-mono tracking-wider mt-1 px-1.5 py-0.5 border border-phosphor/30 bg-phosphor/5">
               TINYML EDGE AI
             </span>
-            <span className="text-[8px] text-term-dim mt-2 tracking-widest">XTENSA LX7 32-BIT</span>
+            <span className="text-[8px] text-term-dim mt-2 tracking-widest">XTENSA LX6 32-BIT</span>
           </div>
 
           {/* Right Pin Header Column */}
@@ -357,15 +379,22 @@ export default function MicrocontrollerWorkbench() {
         </div>
 
         {/* 60fps Signal Oscilloscope Viewport */}
-        <div className="mt-3 relative border border-console-border bg-[#040504]">
-          <div className="absolute top-1.5 left-2 z-10 flex items-center gap-2 text-[9px] text-term-dim">
-            <span className="text-phosphor">CH_A // 500mV/DIV</span>
-            <span>TIME: 2.5ms/DIV</span>
-            <span>TRIGGER: AUTO</span>
+        <div className="mt-3 border border-console-border bg-[#040504] overflow-hidden">
+          {/* Dedicated Header Row: Never overlaps the trace line */}
+          <div className="px-2.5 py-1.5 bg-[#090C09] border-b border-console-border flex items-center justify-between text-[9px] text-term-dim">
+            <div className="flex items-center gap-2">
+              <span className="text-phosphor font-bold">CH_A // 500mV/DIV</span>
+              <span className="hidden sm:inline text-term-dim">·</span>
+              <span>TIME: 2.5ms/DIV</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-amber font-semibold">TRIGGER: AUTO</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-phosphor animate-pulse inline-block" aria-hidden="true" />
+            </div>
           </div>
           <canvas
             ref={canvasRef}
-            className="w-full h-[95px] block"
+            className="w-full h-[90px] block"
             aria-label="Oscilloscope real-time waveform display"
           />
         </div>

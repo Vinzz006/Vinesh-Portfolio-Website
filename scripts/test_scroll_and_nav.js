@@ -3,7 +3,7 @@ import http from 'http';
 
 const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const PORT = 9222;
-const TARGET_URL = 'http://localhost:4177/';
+const TARGET_URL = 'http://localhost:4178/';
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));

@@ -12,7 +12,7 @@ function testUrl(uaName, userAgent) {
   if (userAgent) {
     args.push(`--user-agent=${userAgent}`);
   }
-  args.push('http://localhost:4177/');
+  args.push('http://localhost:4178/');
 
   const html = execFileSync(chromePath, args, {
     encoding: 'utf8',
@@ -37,7 +37,7 @@ function testUrl(uaName, userAgent) {
   console.log(`Headless DOM Inspection: ${uaName}`);
   console.log(`============================================================`);
   for (const s of sections) {
-    const hasTag = html.includes(s.tag);
+    const hasTag = html.includes(`id="${s.id}"`) || html.includes(`<${s.id}`);
     const hasText = html.includes(s.text);
     const isPlaceholder = html.includes(`data-placeholder-for="${s.id}"`);
     console.log(`- #${s.id.padEnd(11)}: DOM Element: [${hasTag ? 'PRESENT' : 'ABSENT'}], Real Content Loaded: [${hasText ? 'YES' : 'NO'}] ${isPlaceholder ? '(Lazy Placeholder active)' : ''}`);
@@ -49,3 +49,36 @@ testUrl('Regular Browser Visitor (Zero scroll, mobile/desktop viewport)', 'Mozil
 
 // 2. Search Engine Crawler / Bot (e.g. Googlebot)
 testUrl('Search Engine Bot / Crawler (Googlebot user-agent)', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)');
+
+// 3. No-JS Visitor (JavaScript disabled in browser)
+function testNoJs() {
+  const args = [
+    '--headless=new',
+    '--dump-dom',
+    '--disable-gpu',
+    '--disable-javascript',
+    'http://localhost:4178/'
+  ];
+  const html = execFileSync(chromePath, args, {
+    encoding: 'utf8',
+    maxBuffer: 50 * 1024 * 1024,
+    timeout: 25000,
+  });
+  console.log(`\n============================================================`);
+  console.log(`Headless DOM Inspection: No-JS Visitor (--disable-javascript)`);
+  console.log(`============================================================`);
+  const sections = [
+    { id: 'home', tag: 'section id="home"', text: 'VINESH SHANMUGAM' },
+    { id: 'about', tag: 'section id="about"', text: 'Meenakshi' },
+    { id: 'projects', tag: 'section id="projects"', text: 'TinyML' },
+    { id: 'skills', tag: 'section id="skills"', text: 'ESP32' },
+    { id: 'experience', tag: 'section id="experience"', text: 'Chennai' },
+    { id: 'footer', tag: 'footer', text: 'Hardware Debug Console' },
+  ];
+  for (const s of sections) {
+    const hasTag = html.includes(`id="${s.id}"`) || html.includes(`<${s.id}`);
+    const hasText = html.includes(s.text);
+    console.log(`- #${s.id.padEnd(11)}: DOM Element: [${hasTag ? 'PRESENT' : 'ABSENT'}], Static Content Loaded: [${hasText ? 'YES' : 'NO'}]`);
+  }
+}
+testNoJs();

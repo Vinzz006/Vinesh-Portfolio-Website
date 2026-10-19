@@ -34,6 +34,17 @@ async function generateOGImage() {
       .toBuffer();
   }
 
+  // Dynamically read location & operatorId from profile.ts SSOT
+  let locationStr = 'Chennai, IN';
+  let operatorIdStr = 'ID: VS-001 // OP';
+  try {
+    const profileSrc = fs.readFileSync(path.join(__dirname, '../src/data/profile.ts'), 'utf-8');
+    const locMatch = profileSrc.match(/location:\s*['"]([^'"]+)['"]/);
+    if (locMatch) locationStr = locMatch[1];
+    const opMatch = profileSrc.match(/operatorId:\s*['"]([^'"]+)['"]/);
+    if (opMatch) operatorIdStr = opMatch[1];
+  } catch {}
+
   // Base SVG Overlay (1200x630)
   const svgOverlay = `
   <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
@@ -97,7 +108,7 @@ async function generateOGImage() {
         <!-- Register 1: Location -->
         <rect x="0" y="0" width="165" height="58" fill="#0B0E0B" stroke="#1A231A" stroke-width="1" />
         <text x="12" y="20" fill="#6D7D6D" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1">LOCATION:</text>
-        <text x="12" y="42" fill="#EAF2EA" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="bold">Tiruchirappalli, IN</text>
+        <text x="12" y="42" fill="#EAF2EA" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="bold">${locationStr}</text>
 
         <!-- Register 2: Status -->
         <rect x="175" y="0" width="180" height="58" fill="#0B0E0B" stroke="#1A231A" stroke-width="1" />
@@ -119,7 +130,7 @@ async function generateOGImage() {
       <!-- Caption Plate below Photo -->
       <rect x="0" y="160" width="160" height="34" fill="#090C09" stroke="#1A231A" stroke-width="1" />
       <circle cx="12" cy="173" r="3" fill="#39FF88" />
-      <text x="22" y="176" fill="#EAF2EA" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">ID: VS-001 // OPERATOR</text>
+      <text x="22" y="176" fill="#EAF2EA" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="bold">${operatorIdStr}</text>
       <text x="22" y="188" fill="#39FF88" font-family="'JetBrains Mono', monospace" font-size="8">STATUS: ONLINE</text>
     </g>
 

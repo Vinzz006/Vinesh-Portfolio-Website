@@ -1,46 +1,73 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { ArrowRight, FileText, Mail, Terminal, RotateCcw } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
-import ResumeModal from '../components/ResumeModal';
-import BootSequenceIntro from '../components/BootSequenceIntro';
-import MicrocontrollerWorkbench from '../components/MicrocontrollerWorkbench';
 import OperatorIdPhoto from '../components/OperatorIdPhoto';
+import MicrocontrollerWorkbench from '../components/MicrocontrollerWorkbench';
 import { OWNER_NAME, HERO_TITLE, STATUS_PANEL, CONTACT_LINKS } from '../data/profile';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+
+// Defer non-critical modals out of initial bundle
+const ResumeModal = lazy(() => import('../components/ResumeModal'));
 
 export default function HeroSection() {
   const reduced = useReducedMotion();
   const [resumeOpen, setResumeOpen] = useState(false);
-  const [showBootIntro, setShowBootIntro] = useState(() => {
+
+  // In-place Status Panel BIOS boot sequence: runs once per session, capped at 1.2s, skippable
+  const [bootDone, setBootDone] = useState(() => {
+    if (typeof window === 'undefined') return true;
     try {
-      if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        return false;
-      }
-      return !sessionStorage.getItem('vinesh_boot_seq_seen');
+      return (
+        !!sessionStorage.getItem('vinesh_boot_seq_seen') ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      );
     } catch {
-      return false;
+      return true;
     }
   });
+  const [bootStep, setBootStep] = useState(0);
+
+  useEffect(() => {
+    if (bootDone) return;
+    const t1 = setTimeout(() => setBootStep(1), 220);
+    const t2 = setTimeout(() => setBootStep(2), 500);
+    const t3 = setTimeout(() => setBootStep(3), 800);
+    const tEnd = setTimeout(() => {
+      setBootDone(true);
+      try {
+        sessionStorage.setItem('vinesh_boot_seq_seen', '1');
+      } catch {}
+    }, 1200);
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === ' ') {
+        setBootDone(true);
+        try {
+          sessionStorage.setItem('vinesh_boot_seq_seen', '1');
+        } catch {}
+      }
+    };
+    window.addEventListener('keydown', onKey);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(tEnd);
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [bootDone]);
 
   const fullRole = HERO_TITLE; // "ECE Student · Embedded AI & IoT"
   const typedRole = fullRole;
 
   const handleRerunBoot = () => {
-    try {
-      sessionStorage.removeItem('vinesh_boot_seq_seen');
-    } catch {
-      // ignore
-    }
-    setShowBootIntro(true);
+    setBootStep(0);
+    setBootDone(false);
   };
 
   return (
     <>
-      {/* 1.5s Boot-Sequence Intro (Shown once per session, skippable) */}
-      {showBootIntro && (
-        <BootSequenceIntro onComplete={() => setShowBootIntro(false)} />
-      )}
-
       <section
         id="home"
         className="relative pt-8 pb-16 md:pt-12 md:pb-24 overflow-hidden font-mono border-b border-console-border bg-[#060806]"
@@ -97,8 +124,61 @@ export default function HeroSection() {
                   <OperatorIdPhoto variant="hero" aboveFold={true} />
                 </div>
 
-                {/* Live Hardware Status Panel (Configurable in src/data/profile.ts) */}
-                <div className="flex-1 w-full min-w-0 console-panel border border-console-border p-3 sm:p-3.5 bg-[#090C09]">
+                {/* Live Hardware Status Panel with Zero-CLS In-Place BIOS Boot Animation */}
+                <div
+                  className="flex-1 w-full min-w-0 console-panel border border-console-border p-3 sm:p-3.5 bg-[#090C09] relative overflow-hidden cursor-pointer"
+                  onClick={() => {
+                    if (!bootDone) {
+                      setBootDone(true);
+                      try {
+                        sessionStorage.setItem('vinesh_boot_seq_seen', '1');
+                      } catch {}
+                    }
+                  }}
+                  title={!bootDone ? 'Click or press Esc to skip boot initialization' : undefined}
+                >
+                  {/* Transient In-Place BIOS Boot Animation (Zero CLS: Absolute Overlay over Status Registers) */}
+                  {!bootDone && (
+                    <div
+                      className="absolute inset-0 z-20 bg-[#090C09] p-3 sm:p-3.5 flex flex-col justify-between font-mono select-none"
+                      aria-hidden="true"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between border-b border-console-border pb-2 mb-2 text-[10px]">
+                          <div className="flex items-center gap-2">
+                            <span className="led-phosphor animate-ping" />
+                            <span className="text-phosphor font-bold uppercase tracking-wider">
+                              BENCH STATUS // BIOS_INIT
+                            </span>
+                          </div>
+                          <span className="text-term-dim uppercase text-[9px]">[ESC / CLICK TO SKIP]</span>
+                        </div>
+                        <div className="text-[10px] text-term-dim pb-1 mb-1.5 border-b border-console-border/40 flex justify-between">
+                          <span className="text-phosphor font-semibold">&gt; ESP32-WROOM-32D BIOS</span>
+                          <span>240MHz · 520KB</span>
+                        </div>
+                        <div className="space-y-1 text-[11px]">
+                          <div className={`flex justify-between transition-opacity duration-150 ${bootStep >= 1 ? 'opacity-100 text-term-text' : 'opacity-0'}`}>
+                            <span>&gt; GPIO &amp; power rails:</span>
+                            <span className="text-phosphor font-bold">[ OK ]</span>
+                          </div>
+                          <div className={`flex justify-between transition-opacity duration-150 ${bootStep >= 2 ? 'opacity-100 text-term-text' : 'opacity-0'}`}>
+                            <span>&gt; I2C bus &amp; MPU6050:</span>
+                            <span className="text-phosphor font-bold">[ OK ]</span>
+                          </div>
+                          <div className={`flex justify-between transition-opacity duration-150 ${bootStep >= 3 ? 'opacity-100 text-term-text' : 'opacity-0'}`}>
+                            <span>&gt; Telemetry registers:</span>
+                            <span className="text-phosphor font-bold">[ ONLINE ]</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-[9px] text-term-dim border-t border-console-border/50 pt-1 text-right">
+                        SYS_CLOCK: 240MHz
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Permanent Status Registers (Guarantees 100% stable geometry from frame 0) */}
                   <div className="flex items-center justify-between border-b border-console-border pb-2 mb-2.5 text-[10px]">
                     <div className="flex items-center gap-2">
                       <span className="led-phosphor animate-pulse" />
@@ -243,7 +323,11 @@ export default function HeroSection() {
       </section>
 
       {/* Official Resume Modal */}
-      <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+      {resumeOpen && (
+        <Suspense fallback={null}>
+          <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchGitHubRepos, fetchGitHubUser, GitHubRepo, GitHubUser } from '../lib/github';
+import { scheduleIdle, cancelIdle } from '../lib/idle';
 
 interface UseGitHubReturn {
   user: GitHubUser | null;
@@ -123,8 +124,15 @@ export function useGitHub(): UseGitHubReturn {
         if (!cancelled) setLoading(false);
       }
     }
-    load();
-    return () => { cancelled = true; };
+
+    const idleHandle = scheduleIdle(() => {
+      load();
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      cancelIdle(idleHandle);
+    };
   }, []);
 
   return { user, repos, loading, error };

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Mail, ArrowUp, Command, Keyboard, X } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
-import { HERO_TITLE, HERO_SUBTITLE, OWNER_NAME } from '../data/profile';
+import { HERO_TITLE, HERO_SUBTITLE, OWNER_NAME, STATUS_PANEL } from '../data/profile';
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -126,6 +126,9 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-3">
+            <span className="text-term-muted hidden sm:inline">
+              LOC: <span className="text-term-bright font-semibold">{STATUS_PANEL.location}</span>
+            </span>
             <span className="text-term-muted">
               SESSION UPTIME: <span className="text-phosphor font-bold">{formatUptime(uptime)}</span>
             </span>

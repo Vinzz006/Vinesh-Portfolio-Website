@@ -68,8 +68,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', '"IBM Plex Mono"', 'monospace'],
+        sans: ['Inter', '"Inter Fallback"', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', '"JetBrains Mono Fallback"', '"IBM Plex Mono"', 'monospace'],
       },
       backgroundImage: {
         'grid-pattern':

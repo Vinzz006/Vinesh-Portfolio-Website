@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Menu, X, FileText, ExternalLink, Terminal } from 'lucide-react';
-import ResumeModal from './ResumeModal';
 import { STATUS_PANEL, CONTACT_LINKS } from '../data/content';
+
+const ResumeModal = lazy(() => import('./ResumeModal'));
 
 interface NavItem {
   num: string;
@@ -309,7 +310,11 @@ export default function Navigation() {
       )}
 
       {/* Official Resume PDF Modal */}
-      <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+      {resumeOpen && (
+        <Suspense fallback={null}>
+          <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

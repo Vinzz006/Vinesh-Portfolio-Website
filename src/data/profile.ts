@@ -12,7 +12,7 @@ export const SITE_URL = 'https://vinesh-portfolio-website.vercel.app';
  * Edit these values in one place to update hero status displays across the site.
  */
 export const STATUS_PANEL = {
-  location: 'Tiruchirappalli, IN',
+  location: 'Chennai, IN',
   status: 'Open to internships',
   stack: 'ESP32 / TinyML / React',
   systemStatus: 'ONLINE // NOMINAL',
@@ -79,7 +79,7 @@ export const PROFILE_IMAGE: ProfileImageConfig = {
   jpg800: '/images/profile-800.jpg',
   jpg400: '/images/profile-400.jpg',
   alt: 'Portrait of Vinesh Shanmugam',
-  operatorId: 'ID: VS-001 // OPERATOR',
+  operatorId: 'ID: VS-001 // OP',
   statusText: 'STATUS: ONLINE',
   frameStyle: 'bracket',
 } as const;

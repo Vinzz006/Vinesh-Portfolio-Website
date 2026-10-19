@@ -50,6 +50,16 @@
         "jobTitle": "ECE Student · Embedded AI & IoT",
         "url": "https://vinesh-portfolio-website.vercel.app/",
         "email": "shanmugamvinesh75@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Chennai",
+          "addressRegion": "Tamil Nadu",
+          "addressCountry": "IN"
+        },
+        "homeLocation": {
+          "@type": "Place",
+          "name": "Chennai, Tamil Nadu, India"
+        },
         "alumniOf": {
           "@type": "CollegeOrUniversity",
           "name": "Meenakshi Sundararajan Engineering College"
@@ -61,9 +71,43 @@
       }
     </script>
 
-    <!-- Fonts: Self-hosted via @fontsource (bundled by Vite with font-display: swap) -->
+    <!-- Font Preloads: Hero Monospace Headline & Body (Latin Subset) -->
+    <link rel="preload" href="/assets/jetbrains-mono-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/inter-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Hero Photo Preload for Mobile & Desktop (0 LCP delay) -->
+    <link
+      rel="preload"
+      as="image"
+      href="/images/profile-hero-400.webp"
+      type="image/webp"
+      imagesrcset="/images/profile-hero-400.webp 400w, /images/profile-hero-800.webp 800w"
+      imagesizes="(max-width: 640px) 144px, (max-width: 1024px) 176px, 200px"
+      fetchpriority="high"
+    />
+    <style>
+      @font-face {
+        font-family: 'JetBrains Mono Fallback';
+        src: local('Courier New'), monospace;
+        ascent-override: 86.84%;
+        descent-override: 24.12%;
+        line-gap-override: 0.00%;
+        size-adjust: 105.94%;
+      }
+      @font-face {
+        font-family: 'Inter Fallback';
+        src: local('Arial'), sans-serif;
+        ascent-override: 90.20%;
+        descent-override: 22.48%;
+        line-gap-override: 0.00%;
+        size-adjust: 107.40%;
+      }
+    </style>
   </head>
   <body style="background-color: #060806; color: #CCDACC; margin: 0; font-family: 'JetBrains Mono', ui-monospace, monospace;">
+
     <!-- Noscript Banner for Users with JavaScript Disabled -->
     <noscript>
       <div style="background-color: #0B0E0B; border-bottom: 2px solid #39FF88; color: #39FF88; padding: 0.75rem 1.5rem; font-size: 0.8rem; text-align: center; letter-spacing: 0.05em;">
@@ -165,7 +209,7 @@
         <div class="flex items-center justify-between gap-1 text-[9px] sm:text-[10px] leading-tight">
           <div class="flex items-center gap-1.5 truncate">
             <span class="w-1.5 h-1.5 rounded-full bg-phosphor inline-block shrink-0 animate-pulse" aria-hidden="true"></span>
-            <span class="text-term-bright font-bold truncate">ID: VS-001 // OPERATOR</span>
+            <span class="text-term-bright font-bold truncate">ID: VS-001 // OP</span>
           </div>
           <span class="text-phosphor font-semibold text-[8px] sm:text-[9px] shrink-0">[TAP]</span>
         </div>
@@ -194,7 +238,7 @@
                       
                       <div class="p-2 border border-console-border bg-[#040504]">
                         <span class="text-[10px] text-term-dim block uppercase">LOCATION:</span>
-                        <span class="text-term-bright font-semibold">Tiruchirappalli, IN</span>
+                        <span class="text-term-bright font-semibold">Chennai, IN</span>
                       </div>
                       
                       <div class="p-2 border border-console-border bg-[#040504]">
@@ -241,18 +285,23 @@
                   <div class="text-[10px] text-term-dim uppercase tracking-wider mb-1">&gt; EXECUTE BENCH COMMANDS:</div>
                   <div class="flex flex-wrap gap-2.5 items-center">
                     <a href="/resume.pdf" download="Vinesh_Shanmugam_Resume.pdf" class="console-btn text-xs py-2 px-3.5 flex items-center gap-2">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
                       <span>$ open resume.pdf</span>
                     </a>
                     <a href="#projects" class="console-btn-amber text-xs py-2 px-3.5 flex items-center gap-2">
                       <span>$ view projects</span>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                     </a>
                     <a href="mailto:shanmugamvinesh75@gmail.com" class="console-btn-ghost text-xs py-2 px-3 flex items-center gap-1.5">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                       <span>$ mailto:vinesh</span>
                     </a>
                     <a href="https://github.com/Vinzz006" target="_blank" rel="noopener noreferrer" class="console-btn-ghost text-xs py-2 px-3 flex items-center gap-1.5">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
                       <span>$ git remote</span>
                     </a>
                     <a href="https://www.linkedin.com/in/vinesh-shanmugam-109215363" target="_blank" rel="noopener noreferrer" class="console-btn-ghost text-xs py-2 px-3 flex items-center gap-1.5">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                       <span>$ linkedin</span>
                     </a>
                   </div>
@@ -261,23 +310,47 @@
 
               <!-- Right Column Microcontroller Diagnostic Box -->
               <div class="lg:col-span-5 w-full">
-                <div class="console-panel border border-console-border p-4 bg-[#090C09] font-mono">
-                  <div class="flex items-center justify-between border-b border-console-border pb-2.5 mb-3 text-xs">
+                <div class="console-panel border border-console-border p-4 bg-[#080B08] font-mono min-h-[445px]">
+                  <div class="flex items-center justify-between border-b border-console-border pb-2.5 mb-3.5 text-[11px]">
                     <div class="flex items-center gap-2">
-                      <span class="text-phosphor font-bold">[MCU_PINOUT // ESP32-WROOM-32D]</span>
+                      <span class="w-2 h-2 rounded-full bg-phosphor inline-block"></span>
+                      <span class="text-phosphor font-bold tracking-wider uppercase">[MCU_PINOUT // ESP32-WROOM-32D]</span>
                     </div>
-                    <span class="text-[10px] text-term-dim">ACTIVE TELEMETRY</span>
+                    <span class="text-[10px] text-term-muted">240MHz · DUAL-CORE</span>
                   </div>
-                  <div class="border border-console-border bg-[#060806] p-4 text-center">
-                    <div class="text-xs text-phosphor font-bold mb-1">MICROCONTROLLER BENCH</div>
-                    <div class="text-[11px] text-term-muted">38-PIN GPIO MATRIX · 240MHz DUAL-CORE XTENSA</div>
-                    <div class="my-4 p-3 bg-[#0B0E0B] border border-console-border text-left text-xs space-y-1">
-                      <div class="text-term-dim">&gt; I2C: <span class="text-term-bright">SDA (GPIO_21) · SCL (GPIO_22)</span></div>
-                      <div class="text-term-dim">&gt; SPI: <span class="text-term-bright">MOSI (GPIO_23) · MISO (GPIO_19)</span></div>
-                      <div class="text-term-dim">&gt; ADC: <span class="text-term-bright">ADC1_CH0 (GPIO_36) 12-bit</span></div>
-                      <div class="text-term-dim">&gt; UART: <span class="text-term-bright">TX0 (GPIO_1) · RX0 (GPIO_3)</span></div>
+                  <div class="border border-console-border bg-[#050705] p-3 text-center mb-3">
+                    <div class="text-[9px] text-term-muted tracking-widest uppercase">ESPRESSIF SYSTEMS</div>
+                    <div class="text-xs font-black text-term-bright tracking-tight mt-0.5">ESP32-WROOM-32D</div>
+                    <div class="text-[8px] text-phosphor/80 font-mono tracking-wider mt-1 inline-block px-1.5 py-0.5 border border-phosphor/30 bg-phosphor/5">
+                      TINYML EDGE AI &middot; 38-PIN GPIO MATRIX
                     </div>
-                    <div class="text-[10px] text-term-dim">[PRE-RENDERED HARDWARE SCHEMATIC]</div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 text-[10px] mb-3">
+                    <div class="p-1.5 border border-console-border bg-[#040504]">
+                      <span class="text-term-dim block">I2C BUS:</span>
+                      <span class="text-phosphor font-bold">GPIO 21/22</span>
+                    </div>
+                    <div class="p-1.5 border border-console-border bg-[#040504]">
+                      <span class="text-term-dim block">SPI BUS:</span>
+                      <span class="text-term-bright font-semibold">GPIO 18/19/23</span>
+                    </div>
+                    <div class="p-1.5 border border-console-border bg-[#040504]">
+                      <span class="text-term-dim block">ADC CHANNEL:</span>
+                      <span class="text-term-bright font-semibold">12-bit (GPIO 36)</span>
+                    </div>
+                    <div class="p-1.5 border border-console-border bg-[#040504]">
+                      <span class="text-term-dim block">FREQUENCY:</span>
+                      <span class="text-amber font-semibold">240 MHz</span>
+                    </div>
+                  </div>
+                  <div class="border border-console-border bg-[#040504] p-2 text-[10px]">
+                    <div class="flex items-center justify-between text-[9px] text-term-dim border-b border-console-border/70 pb-1 mb-1">
+                      <span class="text-phosphor font-bold">CH_A // 500mV/DIV</span>
+                      <span class="text-amber font-semibold">STATUS: PROBING</span>
+                    </div>
+                    <div class="h-[90px] flex items-center justify-center text-term-dim text-[10px] border border-dashed border-console-border/50">
+                      [REAL-TIME 60FPS OSCILLOSCOPE ACTIVE ON MOUNT]
+                    </div>
                   </div>
                 </div>
               </div>
@@ -339,7 +412,7 @@
         <div class="flex items-center justify-between gap-1 text-[9px] sm:text-[10px] leading-tight">
           <div class="flex items-center gap-1.5 truncate">
             <span class="w-1.5 h-1.5 rounded-full bg-phosphor inline-block shrink-0 animate-pulse" aria-hidden="true"></span>
-            <span class="text-term-bright font-bold truncate">ID: VS-001 // OPERATOR</span>
+            <span class="text-term-bright font-bold truncate">ID: VS-001 // OP</span>
           </div>
           <span class="text-phosphor font-semibold text-[8px] sm:text-[9px] shrink-0">[TAP]</span>
         </div>

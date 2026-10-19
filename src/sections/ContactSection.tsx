@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { Mail, ExternalLink, Copy, Check, FileText, Send, ArrowRight } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/Icons';
-import ResumeModal from '../components/ResumeModal';
 import { STATUS_PANEL, CONTACT_LINKS, OWNER_NAME, HERO_TITLE } from '../data/profile';
+
+const ResumeModal = lazy(() => import('../components/ResumeModal'));
 
 interface TerminalLog {
   id: string;
@@ -150,7 +151,7 @@ export default function ContactSection() {
               <p><span className="text-phosphor font-bold">github</span> ... Open GitHub repository profile (github.com/Vinzz006)</p>
               <p><span className="text-phosphor font-bold">linkedin</span> . Open official LinkedIn profile</p>
               <p><span className="text-phosphor font-bold">resume</span> ... Open official Resume PDF viewer and download</p>
-              <p><span className="text-phosphor font-bold">whoami</span> ... Print engineering bio and credentials</p>
+              <p><span className="text-phosphor font-bold">whoami</span> / <span className="text-phosphor font-bold">about</span> . Print engineering bio, location &amp; credentials</p>
               <p><span className="text-phosphor font-bold">status</span> ... Display live opportunity &amp; location status</p>
               <p><span className="text-phosphor font-bold">sudo</span> ..... Superuser privileges (try: sudo hire vinesh)</p>
               <p><span className="text-phosphor font-bold">konami</span> ... Unlock retro 8-bit hardware bench easter egg</p>
@@ -235,10 +236,12 @@ export default function ContactSection() {
           break;
 
         case 'whoami':
+        case 'about':
           output = (
             <div className="space-y-1 text-xs text-term-text font-sans">
               <p className="text-term-bright font-bold font-mono">{OWNER_NAME} — {HERO_TITLE}</p>
-              <p>B.E. in Electronics &amp; Communication Engineering (2024–2028), Meenakshi Sundararajan Engineering College.</p>
+              <p>Location: <span className="font-mono text-phosphor">{STATUS_PANEL.location}</span></p>
+              <p>B.E. in Electronics &amp; Communication Engineering (2024–2028), Meenakshi Sundararajan Engineering College, Chennai.</p>
               <p>Specializes in edge AI, TinyML microcontrollers (ESP32), sensor signal pipelines, and real-time React dashboards.</p>
             </div>
           );
@@ -609,7 +612,11 @@ export default function ContactSection() {
       </div>
 
       {/* Official Resume Modal */}
-      <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+      {resumeOpen && (
+        <Suspense fallback={null}>
+          <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+        </Suspense>
+      )}
     </section>
   );
 }

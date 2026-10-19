@@ -65,7 +65,7 @@ export default function BootSequenceIntro({ onComplete }: BootSequenceIntroProps
     <div
       onClick={finish}
       style={{ contain: 'strict' }}
-      className={`fixed inset-0 z-50 bg-[#060806]/85 backdrop-blur-[2px] text-term-text font-mono flex flex-col justify-between p-6 sm:p-12 cursor-pointer transition-opacity duration-300 select-none ${
+      className={`fixed inset-0 z-50 bg-[#060806]/95 text-term-text font-mono flex flex-col justify-between p-6 sm:p-12 cursor-pointer transition-opacity duration-300 select-none ${
         fading ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
       aria-hidden="true"
@@ -89,10 +89,8 @@ export default function BootSequenceIntro({ onComplete }: BootSequenceIntroProps
 
       {/* Terminal Output */}
       <div className="relative z-10 max-w-3xl my-auto py-6">
-        <div className="text-term-dim text-xs mb-3">
-          ========================================================================<br />
-          VINESH SHANMUGAM // EMBEDDED AI &amp; HARDWARE BENCH DEBUGGER<br />
-          ========================================================================
+        <div className="border-t border-b border-console-border py-1.5 text-term-dim text-[11px] sm:text-xs mb-3 font-mono tracking-wider">
+          VINESH SHANMUGAM // EMBEDDED AI &amp; HARDWARE BENCH DEBUGGER
         </div>
 
         <div className="space-y-1.5 text-xs sm:text-sm">
